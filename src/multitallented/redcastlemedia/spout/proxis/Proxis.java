@@ -1,6 +1,6 @@
-package main.java.multitallented.redcastlemedia.spout.proxis;
+package multitallented.redcastlemedia.spout.proxis;
 
-import main.java.multitallented.redcastlemedia.spout.proxis.models.Config;
+import multitallented.redcastlemedia.spout.proxis.models.Config;
 import org.spout.api.Engine;
 import org.spout.api.exception.ConfigurationException;
 import org.spout.api.plugin.CommonPlugin;

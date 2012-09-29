@@ -1,6 +1,4 @@
-package main.java.multitallented.redcastlemedia.spout.proxis.managers;
-
-import java.io.File;
+package multitallented.redcastlemedia.spout.proxis.managers;
 
 /**
  *

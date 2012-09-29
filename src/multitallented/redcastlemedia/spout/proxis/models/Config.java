@@ -1,4 +1,4 @@
-package main.java.multitallented.redcastlemedia.spout.proxis.models;
+package multitallented.redcastlemedia.spout.proxis.models;
 
 import java.io.File;
 import org.spout.api.exception.ConfigurationException;
@@ -16,6 +16,7 @@ public class Config extends ConfigurationHolderConfiguration {
     
     public Config(File dataFolder) {
         super(new YamlConfiguration(new File(dataFolder, "config.yml")));
+        super.setWritesDefaults(true);
     }
     
     @Override
