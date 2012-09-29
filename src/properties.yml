@@ -2,7 +2,6 @@ name: Proxis
 version: 0.1 b001
 description: An RPG system geared towards free-to-play servers.
 author: Multitallented
-
 main: multitallented.redcastlemedia.spout.proxis.Proxis
 load: startup
 platform: BOTH
