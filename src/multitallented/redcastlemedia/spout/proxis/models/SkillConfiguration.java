@@ -11,35 +11,23 @@ import org.spout.api.util.config.yaml.YamlConfiguration;
  *
  * @author Multitallented
  */
-public class ProxisConfiguration extends ConfigurationHolderConfiguration {
-    public static final ConfigurationHolder LOCALE = new ConfigurationHolder("en", "locale");
-    public static final ConfigurationHolder SKILL_CATEGORIES = new ConfigurationHolder(new ArrayList<String>(), "skill-categories");
+public class SkillConfiguration extends ConfigurationHolderConfiguration {
+    public static final ConfigurationHolder SKILLS = new ConfigurationHolder(new ArrayList<String>(), "skills"); //TODO fix this
 
     
-    public ProxisConfiguration(File dataFolder) {
+    public SkillConfiguration(File dataFolder) {
         super(new YamlConfiguration(new File(dataFolder, "config.yml")));
         buildDefaults();
     }
     
     private void buildDefaults() {
+        //TODO fix this
         ArrayList<String> defaultList = new ArrayList<>();
         defaultList.add("Earth");
         defaultList.add("Fire");
         defaultList.add("Water");
         defaultList.add("Air");
-        SKILL_CATEGORIES.setDefaultValue(defaultList);
-    }
-    
-    public static ArrayList<String> getLocalizedHelp() {
-        ArrayList<String> tempList = new ArrayList<>();
-        
-        //TODO write this
-        switch (LOCALE.getString()) {
-            case "en":
-                tempList.add("");
-                break;
-        }
-        return tempList;
+        SKILLS.setDefaultValue(defaultList);
     }
     
     @Override

@@ -1,6 +1,8 @@
 package multitallented.redcastlemedia.spout.proxis.commands;
 
 import multitallented.redcastlemedia.spout.proxis.Proxis;
+import multitallented.redcastlemedia.spout.proxis.models.ProxisConfiguration;
+import org.spout.api.chat.style.ChatStyle;
 import org.spout.api.command.CommandContext;
 import org.spout.api.command.CommandSource;
 import org.spout.api.command.annotated.Command;
@@ -51,5 +53,11 @@ public class ProxisCommands {
                 // Display information
                 sendinfo(source);
         }*/
+    }
+    
+    private void sendHelp(CommandSource source) {
+        for (String s : ProxisConfiguration.getLocalizedHelp()) {
+            source.sendMessage(ChatStyle.YELLOW + "");
+        }
     }
 }
