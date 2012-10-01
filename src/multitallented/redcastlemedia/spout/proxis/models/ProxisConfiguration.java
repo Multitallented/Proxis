@@ -2,7 +2,6 @@ package multitallented.redcastlemedia.spout.proxis.models;
 
 import java.io.File;
 import org.spout.api.exception.ConfigurationException;
-import org.spout.api.util.config.ConfigurationHolder;
 import org.spout.api.util.config.ConfigurationHolderConfiguration;
 import org.spout.api.util.config.yaml.YamlConfiguration;
 
@@ -10,22 +9,30 @@ import org.spout.api.util.config.yaml.YamlConfiguration;
  *
  * @author Multitallented
  */
-public class Config extends ConfigurationHolderConfiguration {
-    public static final ConfigurationHolder MOTD = new ConfigurationHolder("A Spout Server", "general", "motd");
+public class ProxisConfiguration extends ConfigurationHolderConfiguration {
+    //public static final ConfigurationHolder MOTD;
 
     
-    public Config(File dataFolder) {
+    public ProxisConfiguration(File dataFolder) {
         super(new YamlConfiguration(new File(dataFolder, "config.yml")));
         super.setWritesDefaults(true);
     }
     
     @Override
-    public void load() throws ConfigurationException {
-        
+    public void load() {
+        try {
+            super.load();
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+        }
     }
     
     @Override
     public void save() throws ConfigurationException {
-        
+        try {
+            super.save();
+        } catch (ConfigurationException e) {
+            e.printStackTrace();
+        }
     }
 }
