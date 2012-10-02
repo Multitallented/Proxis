@@ -14,6 +14,12 @@ import org.spout.api.util.config.yaml.YamlConfiguration;
 public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     public static final ConfigurationHolder LOCALE = new ConfigurationHolder("en", "locale");
     public static final ConfigurationHolder SKILL_CATEGORIES = new ConfigurationHolder(new ArrayList<String>(), "skill-categories");
+    public static final ConfigurationHolder USE_DB = new ConfigurationHolder(false, "use-database");
+    public static final ConfigurationHolder DATABASE_ADDRESS = new ConfigurationHolder("192.168.1.10", "database-address");
+    public static final ConfigurationHolder DATABASE_PORT = new ConfigurationHolder("3237", "database-port");
+    public static final ConfigurationHolder DATABASE_USERNAME = new ConfigurationHolder("root", "database-username");
+    public static final ConfigurationHolder DATABASE_PASSWORD = new ConfigurationHolder("pass", "database-password");
+    public static final ConfigurationHolder DATABASE_NAME = new ConfigurationHolder("proxis", "database-name");
 
     
     public ProxisConfiguration(File dataFolder) {
@@ -30,18 +36,6 @@ public class ProxisConfiguration extends ConfigurationHolderConfiguration {
         SKILL_CATEGORIES.setDefaultValue(defaultList);
     }
     
-    public static ArrayList<String> getLocalizedHelp() {
-        ArrayList<String> tempList = new ArrayList<>();
-        
-        //TODO write this
-        switch (LOCALE.getString()) {
-            case "en":
-                tempList.add("");
-                break;
-        }
-        return tempList;
-    }
-    
     @Override
     public void load() {
         try {
@@ -52,7 +46,7 @@ public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     }
     
     @Override
-    public void save() throws ConfigurationException {
+    public void save() {
         try {
             super.save();
         } catch (ConfigurationException e) {

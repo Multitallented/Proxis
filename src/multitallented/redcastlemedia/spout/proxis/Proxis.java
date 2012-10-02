@@ -31,6 +31,7 @@ public class Proxis extends CommonPlugin {
         getEngine().getRootCommand().addSubCommands(this, ProxisCommands.class, commandRegFactory);
         getEngine().getEventManager().registerEvents(new ProxisListener(this), this);
         config.load();
+        config.save();
     }
 
     @Override

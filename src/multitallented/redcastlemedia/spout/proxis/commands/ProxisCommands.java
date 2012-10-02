@@ -54,10 +54,4 @@ public class ProxisCommands {
                 sendinfo(source);
         }*/
     }
-    
-    private void sendHelp(CommandSource source) {
-        for (String s : ProxisConfiguration.getLocalizedHelp()) {
-            source.sendMessage(ChatStyle.YELLOW + "");
-        }
-    }
 }
