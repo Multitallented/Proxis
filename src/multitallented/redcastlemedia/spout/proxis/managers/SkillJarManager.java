@@ -17,8 +17,8 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.logging.Level;
 import multitallented.redcastlemedia.spout.proxis.Proxis;
-import multitallented.redcastlemedia.spout.proxis.models.skill.SkillSource;
 import multitallented.redcastlemedia.spout.proxis.models.SourceType;
+import multitallented.redcastlemedia.spout.proxis.models.skill.SkillSource;
 
 /**
  *

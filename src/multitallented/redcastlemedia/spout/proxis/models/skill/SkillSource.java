@@ -1,11 +1,8 @@
 package multitallented.redcastlemedia.spout.proxis.models.skill;
 
-import multitallented.redcastlemedia.spout.proxis.models.skill.SkillResult;
-import multitallented.redcastlemedia.spout.proxis.models.skill.SkillConfiguration;
 import java.util.ArrayList;
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import multitallented.redcastlemedia.spout.proxis.models.SourceType;
-import multitallented.redcastlemedia.spout.proxis.models.users.User;
 import multitallented.redcastlemedia.spout.proxis.models.effects.EffectType;
 
 /**
@@ -34,14 +31,6 @@ public abstract class SkillSource {
     }
     
     public abstract SkillConfiguration getConfiguration();
-    
-    public void applyPassives() {
-        
-    }
-    public void removePassives() {
-        
-    }
-    public abstract SkillResult execute(User user);
     
     public Proxis getPlugin() {
         return plugin;

@@ -1,7 +1,7 @@
 package multitallented.redcastlemedia.spout.proxis;
 
 import java.util.logging.Level;
-import multitallented.redcastlemedia.spout.proxis.managers.SkillJarManager;
+import multitallented.redcastlemedia.spout.proxis.managers.SkillManager;
 import multitallented.redcastlemedia.spout.proxis.models.ProxisConfiguration;
 import multitallented.redcastlemedia.spout.proxis.orders.DisableOrder;
 import multitallented.redcastlemedia.spout.proxis.orders.EnableOrder;
@@ -14,7 +14,7 @@ import org.spout.api.plugin.CommonPlugin;
  */
 public class Proxis extends CommonPlugin {
     public ProxisConfiguration config;
-    private SkillJarManager sjm;
+    private SkillManager sm;
     
     @Override
     public void onLoad() {
@@ -41,10 +41,10 @@ public class Proxis extends CommonPlugin {
         getLogger().log(level, text);
     }
     
-    public void setManagers(SkillJarManager sjm) {
-        this.sjm = sjm;
+    public void setManagers(SkillManager sm) {
+        this.sm = sm;
     }
-    public SkillJarManager getSkillJarManager() {
-        return sjm;
+    public SkillManager getSkillManager() {
+        return sm;
     }
 }
