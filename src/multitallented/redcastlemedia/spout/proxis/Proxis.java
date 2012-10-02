@@ -1,15 +1,11 @@
 package multitallented.redcastlemedia.spout.proxis;
 
-import multitallented.redcastlemedia.spout.proxis.listeners.ProxisListener;
 import java.util.logging.Level;
-import multitallented.redcastlemedia.spout.proxis.commands.ProxisCommands;
+import multitallented.redcastlemedia.spout.proxis.managers.SkillJarManager;
 import multitallented.redcastlemedia.spout.proxis.models.ProxisConfiguration;
-import org.spout.api.Engine;
+import multitallented.redcastlemedia.spout.proxis.orders.DisableOrder;
+import multitallented.redcastlemedia.spout.proxis.orders.EnableOrder;
 import org.spout.api.UnsafeMethod;
-import org.spout.api.command.CommandRegistrationsFactory;
-import org.spout.api.command.annotated.AnnotatedCommandRegistrationFactory;
-import org.spout.api.command.annotated.SimpleAnnotatedCommandExecutorFactory;
-import org.spout.api.command.annotated.SimpleInjector;
 import org.spout.api.plugin.CommonPlugin;
 
 /**
@@ -18,6 +14,7 @@ import org.spout.api.plugin.CommonPlugin;
  */
 public class Proxis extends CommonPlugin {
     public ProxisConfiguration config;
+    private SkillJarManager sjm;
     
     @Override
     public void onLoad() {
@@ -27,17 +24,13 @@ public class Proxis extends CommonPlugin {
     @Override
     @UnsafeMethod
     public void onEnable() {
-        CommandRegistrationsFactory<Class<?>> commandRegFactory = new AnnotatedCommandRegistrationFactory(new SimpleInjector(this), new SimpleAnnotatedCommandExecutorFactory());
-        getEngine().getRootCommand().addSubCommands(this, ProxisCommands.class, commandRegFactory);
-        getEngine().getEventManager().registerEvents(new ProxisListener(this), this);
-        config.load();
-        config.save();
+        new EnableOrder(this);
     }
 
     @Override
     @UnsafeMethod
     public void onDisable() {
-        
+        new DisableOrder(this);
     }
     
     public void log(String text) {
@@ -48,4 +41,10 @@ public class Proxis extends CommonPlugin {
         getLogger().log(level, text);
     }
     
+    public void setManagers(SkillJarManager sjm) {
+        this.sjm = sjm;
+    }
+    public SkillJarManager getSkillJarManager() {
+        return sjm;
+    }
 }

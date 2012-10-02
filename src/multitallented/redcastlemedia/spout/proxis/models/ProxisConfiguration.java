@@ -13,7 +13,6 @@ import org.spout.api.util.config.yaml.YamlConfiguration;
  */
 public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     public static final ConfigurationHolder LOCALE = new ConfigurationHolder("en", "locale");
-    public static final ConfigurationHolder SKILL_CATEGORIES = new ConfigurationHolder(new ArrayList<String>(), "skill-categories");
     public static final ConfigurationHolder USE_DB = new ConfigurationHolder(false, "use-database");
     public static final ConfigurationHolder DATABASE_ADDRESS = new ConfigurationHolder("192.168.1.10", "database-address");
     public static final ConfigurationHolder DATABASE_PORT = new ConfigurationHolder("3237", "database-port");
@@ -24,16 +23,6 @@ public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     
     public ProxisConfiguration(File dataFolder) {
         super(new YamlConfiguration(new File(dataFolder, "config.yml")));
-        buildDefaults();
-    }
-    
-    private void buildDefaults() {
-        ArrayList<String> defaultList = new ArrayList<>();
-        defaultList.add("Earth");
-        defaultList.add("Fire");
-        defaultList.add("Water");
-        defaultList.add("Air");
-        SKILL_CATEGORIES.setDefaultValue(defaultList);
     }
     
     @Override
