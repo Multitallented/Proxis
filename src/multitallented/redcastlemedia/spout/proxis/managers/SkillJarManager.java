@@ -7,11 +7,7 @@ import java.lang.reflect.Constructor;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
@@ -96,7 +92,7 @@ public class SkillJarManager {
                 Class<? extends SkillSource> effectClass = clazz.asSubclass(SkillSource.class);
                 Constructor<? extends SkillSource> ctor = effectClass.getConstructor(plugin.getClass());
                 SkillSource skill = ctor.newInstance(plugin);
-                skill.init(plugin, "jar;" + jarFile.getName(), SourceType.JAR_FILE);
+                skill.init(plugin, "jar;" + jarFile.getName());
                 return skill;
             } else
                 throw new Exception();

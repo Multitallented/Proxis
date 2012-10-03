@@ -3,7 +3,6 @@ package multitallented.redcastlemedia.spout.proxis.models.skill;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import multitallented.redcastlemedia.spout.proxis.models.effects.EffectType;
 import org.spout.api.exception.ConfigurationException;
 import org.spout.api.util.config.ConfigurationHolder;
 import org.spout.api.util.config.ConfigurationHolderConfiguration;
@@ -25,11 +24,11 @@ public class SkillConfiguration extends ConfigurationHolderConfiguration {
         ATTRIBUTES = new ConfigurationHolder(attributes, "attributes");
     }
     
-    public ArrayList<EffectType> getTypes() {
-        ArrayList<EffectType> tempList = new ArrayList<>();
+    public ArrayList<SkillComponentType> getTypes() {
+        ArrayList<SkillComponentType> tempList = new ArrayList<>();
         for (String s : TYPES.getStringList()) {
             try {
-                tempList.add(EffectType.valueOf(s));
+                tempList.add(SkillComponentType.valueOf(s));
             } catch (IllegalArgumentException iae) {
                 
             }

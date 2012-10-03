@@ -1,7 +1,6 @@
 package multitallented.redcastlemedia.spout.proxis.models.skill;
 
 import java.util.HashSet;
-import multitallented.redcastlemedia.spout.proxis.models.effects.EffectType;
 
 /**
  *
@@ -9,7 +8,7 @@ import multitallented.redcastlemedia.spout.proxis.models.effects.EffectType;
  */
 public abstract class Skill {
     public final String NAME;
-    public final HashSet<EffectType> TYPES = new HashSet<>();
+    public final HashSet<SkillComponentType> TYPES = new HashSet<>();
     public final SkillSource SOURCE;
     public final SkillConfiguration SKILL_CONFIG;
     

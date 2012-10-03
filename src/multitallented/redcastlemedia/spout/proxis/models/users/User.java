@@ -3,7 +3,7 @@ package multitallented.redcastlemedia.spout.proxis.models.users;
 import java.util.ArrayList;
 import java.util.HashMap;
 import multitallented.redcastlemedia.spout.proxis.models.effects.Effect;
-import multitallented.redcastlemedia.spout.proxis.models.effects.EffectType;
+import multitallented.redcastlemedia.spout.proxis.models.skill.SkillComponentType;
 
 /**
  *
@@ -13,7 +13,7 @@ public class User {
     private String locale = "en";
     private final String name;
     private ArrayList<Effect> effects = new ArrayList<>();
-    private HashMap<EffectType, Double> experience = new HashMap<>();
+    private HashMap<SkillComponentType, Double> experience = new HashMap<>();
     
     public User(String name) {
         this.name = name;
@@ -27,10 +27,10 @@ public class User {
     public String getLocale() {
         return locale;
     }
-    public synchronized HashMap<EffectType, Double> getExperience() {
+    public synchronized HashMap<SkillComponentType, Double> getExperience() {
         return experience;
     }
-    public synchronized void putExperience(EffectType type, double amount) {
+    public synchronized void putExperience(SkillComponentType type, double amount) {
         this.experience.put(type, amount);
     }
 }

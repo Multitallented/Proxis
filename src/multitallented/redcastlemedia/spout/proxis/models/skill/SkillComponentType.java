@@ -1,10 +1,10 @@
-package multitallented.redcastlemedia.spout.proxis.models.effects;
+package multitallented.redcastlemedia.spout.proxis.models.skill;
 
 /**
  *
  * @author Multitallented
  */
-public enum EffectType {
+public enum SkillComponentType {
     STUN,
     SILENCE,
     DISARM,
