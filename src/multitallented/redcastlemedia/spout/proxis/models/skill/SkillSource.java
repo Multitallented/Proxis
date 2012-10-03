@@ -1,38 +1,51 @@
 package multitallented.redcastlemedia.spout.proxis.models.skill;
 
-import java.util.ArrayList;
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import multitallented.redcastlemedia.spout.proxis.models.SourceType;
-import multitallented.redcastlemedia.spout.proxis.models.effects.EffectType;
+import org.spout.api.entity.Player;
+import org.spout.api.util.config.ConfigurationHolderConfiguration;
+import org.spout.api.util.config.yaml.YamlConfiguration;
+import org.spout.vanilla.VanillaPlugin;
+import org.spout.vanilla.component.living.VanillaEntity;
 
 /**
  *
  * @author Multitallented
  */
-public abstract class SkillSource {
-    protected SourceType sourceType;
-    protected String sourceName;
-    protected ArrayList<EffectType> types;
-    protected Proxis plugin;
+public abstract class SkillSource extends ConfigurationHolderConfiguration {
+    private SourceType sourceType;
+    private String sourceName;
+    private Proxis plugin;
+    
+    public SkillSource() {
+        super(new YamlConfiguration());
+    }
     
     public void init(Proxis plugin, String sourceName, SourceType sourceType) {
         this.plugin = plugin;
-        SkillConfiguration skillConfig = getConfiguration();
-        skillConfig.save();
-        setTypes();
         setSource(sourceName, sourceType);
     }
-    
-    protected abstract void setTypes();
     
     protected void setSource(String sourceName, SourceType sourceType) {
         this.sourceName = sourceName;
         this.sourceType = sourceType;
     }
     
-    public abstract SkillConfiguration getConfiguration();
-    
     public Proxis getPlugin() {
         return plugin;
+    }
+    public String getSourceName() {
+        return sourceName;
+    }
+    public SourceType getSourceType() {
+        return sourceType;
+    }
+    
+    public boolean damageCheck(Player damager, VanillaEntity damagee) {
+        plugin.getEngine().getEventManager().callEvent(null);
+        return true;
+    }
+    public boolean damageCheck(Player damager, Player damagee) {
+        return true;
     }
 }

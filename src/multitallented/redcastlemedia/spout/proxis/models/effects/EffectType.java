@@ -62,5 +62,6 @@ public enum EffectType {
     PVP,
     PVE,
     LAVA,
-    SUFFOCATION
+    SUFFOCATION,
+    UNDISPELLABLE
 }
