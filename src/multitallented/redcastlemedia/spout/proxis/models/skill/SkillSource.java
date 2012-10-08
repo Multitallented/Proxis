@@ -40,4 +40,14 @@ public abstract class SkillSource extends ConfigurationHolderConfiguration {
 	public boolean damageCheck(Player damager, Entity damagee) {
 		return plugin.getEngine().getEventManager().callEvent(new EntityDamageEvent(damagee, 0, DamageCause.UNKNOWN, false, (Entity) damager)).isCancelled();
 	}
+	
+	@Override
+	public void save() {
+		
+	}
+	
+	@Override
+	public void load() {
+		
+	}
 }
