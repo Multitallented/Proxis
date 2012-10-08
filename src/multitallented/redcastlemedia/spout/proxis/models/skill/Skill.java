@@ -12,14 +12,14 @@ import org.spout.api.util.config.yaml.YamlConfiguration;
  *
  * @author Multitallented
  */
-public abstract class Skill extends YamlConfiguration {
+public class Skill extends YamlConfiguration {
 	public final String NAME;
 	public final HashSet<SkillComponentType> TYPES = new HashSet<>();
 	public final SkillConfiguration SKILL_CONFIG;
 	private final Proxis plugin;
-    private final HashSet<ConditionSource> conditions = new HashSet<>();
-    private final HashSet<TargetSource> targets = new HashSet<>();
-    private final HashSet<EffectSource> effects = new HashSet<>();
+	private final HashSet<ConditionSource> conditions = new HashSet<>();
+	private final HashSet<TargetSource> targets = new HashSet<>();
+	private final HashSet<EffectSource> effects = new HashSet<>();
 
 	public Skill(Proxis plugin, String name, SkillConfiguration skillConfig) {
 		super(new File(new File(plugin.getDataFolder(), "skills"), name + ".yml"));
@@ -31,6 +31,4 @@ public abstract class Skill extends YamlConfiguration {
 	public HashSet<EffectSource> getEffects() {
 		return effects;
 	}
-    
-    
 }
