@@ -18,14 +18,15 @@ public class Skill extends YamlConfiguration {
 	public final SkillConfiguration SKILL_CONFIG;
 	private final Proxis plugin;
 	private final HashSet<ConditionSource> conditions = new HashSet<>();
-	private final HashSet<TargetSource> targets = new HashSet<>();
+	private final TargetSource target;
 	private final HashSet<EffectSource> effects = new HashSet<>();
 
-	public Skill(Proxis plugin, String name, SkillConfiguration skillConfig) {
+	public Skill(Proxis plugin, String name, SkillConfiguration skillConfig, TargetSource target) {
 		super(new File(new File(plugin.getDataFolder(), "skills"), name + ".yml"));
 		NAME = name;
 		SKILL_CONFIG = skillConfig;
 		this.plugin = plugin;
+		this.target = target;
 	}
 	
 	public HashSet<EffectSource> getEffects() {

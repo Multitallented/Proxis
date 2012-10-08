@@ -2,7 +2,7 @@ package multitallented.redcastlemedia.spout.proxis.models.users;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import multitallented.redcastlemedia.spout.proxis.models.effects.Effect;
+import multitallented.redcastlemedia.spout.proxis.models.effects.EffectSource;
 import multitallented.redcastlemedia.spout.proxis.models.skill.SkillComponentType;
 
 /**
@@ -12,7 +12,7 @@ import multitallented.redcastlemedia.spout.proxis.models.skill.SkillComponentTyp
 public class User {
 	private String locale = "en";
 	private final String name;
-	public final HashSet<Effect> effects = new HashSet<>();
+	public final HashSet<EffectSource> effects = new HashSet<>();
 	private HashMap<SkillComponentType, Double> experience = new HashMap<>();
 
 	public User(String name) {
