@@ -15,13 +15,17 @@ import org.spout.api.util.config.yaml.YamlConfiguration;
 public class SkillConfiguration extends ConfigurationHolderConfiguration {
     public final ConfigurationHolder NAME;
     private final ConfigurationHolder TYPES;
-    public final ConfigurationHolder ATTRIBUTES;
+    public final ConfigurationHolder TARGET;
+    public final ConfigurationHolder CONDITIONS;
+    public final ConfigurationHolder EFFECTS;
     
     public SkillConfiguration(File skillFolder, String fileName, ArrayList<String> types, HashMap<String, Object> attributes) {
         super(new YamlConfiguration(new File(skillFolder, fileName)));
         NAME = new ConfigurationHolder(fileName.replace(".yml", ""), "name");
         TYPES = new ConfigurationHolder(types, "types");
-        ATTRIBUTES = new ConfigurationHolder(attributes, "attributes");
+        TARGET = new TargetConfiguration();
+        CONDITIONS = new ConditionConfiguration();
+        EFFECTS = new EffectConfiguration();
     }
     
     public ArrayList<SkillComponentType> getTypes() {
