@@ -1,13 +1,9 @@
 package multitallented.redcastlemedia.spout.proxis.orders;
 
-import java.io.File;
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import multitallented.redcastlemedia.spout.proxis.commands.ProxisCommands;
 import multitallented.redcastlemedia.spout.proxis.listeners.ProxisListener;
-import multitallented.redcastlemedia.spout.proxis.managers.SkillConfigManager;
-import multitallented.redcastlemedia.spout.proxis.managers.SkillJarManager;
 import multitallented.redcastlemedia.spout.proxis.managers.SkillManager;
-import multitallented.redcastlemedia.spout.proxis.models.skill.SkillConfiguration;
 import org.spout.api.command.CommandRegistrationsFactory;
 import org.spout.api.command.annotated.AnnotatedCommandRegistrationFactory;
 import org.spout.api.command.annotated.SimpleAnnotatedCommandExecutorFactory;

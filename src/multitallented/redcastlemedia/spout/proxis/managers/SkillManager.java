@@ -19,8 +19,6 @@ public class SkillManager {
     
     public void loadAllSkills() {
         sjm.loadSkills();
-        
-        SkillConfigManager.loadAllSkillSource();
     }
     
     public static Skill getSkill(String name) {

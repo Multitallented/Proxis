@@ -5,7 +5,8 @@ import multitallented.redcastlemedia.spout.proxis.models.SourceType;
 import multitallented.redcastlemedia.spout.proxis.models.conditions.ConditionSource;
 import multitallented.redcastlemedia.spout.proxis.models.skill.SkillSource;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
-import org.spout.api.entity.Entity;
+import org.spout.api.geo.cuboid.Block;
+import org.spout.vanilla.component.living.VanillaEntity;
 
 /**
  *
@@ -18,5 +19,9 @@ public abstract class EffectSource extends SkillSource {
 		super(SourceType.EFFECT);
 	}
     
-    public abstract void execute(User user, Entity target);
+    public abstract void execute(User user, User target);
+    
+    public abstract void execute(User user, VanillaEntity target);
+    
+    public abstract void execute(User user, Block target);
 }
