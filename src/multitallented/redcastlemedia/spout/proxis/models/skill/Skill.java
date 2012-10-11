@@ -78,36 +78,36 @@ public class Skill extends YamlConfiguration {
         }
 
         for (EffectSource effect : effects) {
-            failed = false;
-            invalid = false;
+            effect.failed = false;
+            effect.invalid = false;
             outer: for (ConditionSource con : effect.conditions) {
                 for (Object tar : targets.get(target.getIndex(effect.TARGET.getString()))) {
                     if (tar instanceof Player) {
                         User u = UserManager.getUser(((Player) tar).getName());
                         switch (con.testCondition(u)) {
                             case REFUND:
-                                invalid = true;
+                                effect.invalid = true;
                                 break;
                             case FAILED:
-                                failed = true;
+                                effect.failed = true;
                                 break outer;
                         }
                     } else if (tar instanceof VanillaEntity) {
                         switch (con.testCondition((VanillaEntity) tar)) {
                             case REFUND:
-                                invalid = true;
+                                effect.invalid = true;
                                 break;
                             case FAILED:
-                                failed = true;
+                                effect.failed = true;
                                 break outer;
                         }
                     } else if (tar instanceof Block) {
                         switch (con.testCondition((Block) tar)) {
                             case REFUND:
-                                invalid = true;
+                                effect.invalid = true;
                                 break;
                             case FAILED:
-                                failed = true;
+                                effect.failed = true;
                                 break outer;
                         }
                     }
@@ -115,12 +115,12 @@ public class Skill extends YamlConfiguration {
                 }
             }
 
-            if (failed) {
+            if (effect.failed) {
                 for (ConditionSource con : effect.conditions) {
                     con.useCondition(user);
                 }
                 continue;
-            } else if (invalid) {
+            } else if (effect.invalid) {
                 continue;
             }
             for (Object tar : targets.get(target.getIndex(effect.TARGET.getString()))) {
@@ -134,6 +134,16 @@ public class Skill extends YamlConfiguration {
                 }
                 //cast target to user, block, or vanillaentity and execute for each target
             }
+        }
+        skillFailCheck: for (EffectSource effect : effects) {
+        	if(!effect.failed || !effect.invalid) break skillFailCheck;
+        	else {
+        		for (ConditionSource con : conditions) {
+                    con.useCondition(user);
+                }
+                //TODO tell them it failed
+                return;
+        	}
         }
     }
 }

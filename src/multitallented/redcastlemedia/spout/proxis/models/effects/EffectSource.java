@@ -15,6 +15,9 @@ import org.spout.vanilla.component.living.VanillaEntity;
 public abstract class EffectSource extends SkillSource {
 	public final HashSet<ConditionSource> conditions = new HashSet<>();
 	
+	public boolean failed;
+	public boolean invalid;
+	
 	public EffectSource() {
 		super(SourceType.EFFECT);
 	}
