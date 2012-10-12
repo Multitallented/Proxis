@@ -77,6 +77,7 @@ public class Skill extends YamlConfiguration {
 			return;
 		}
 
+		invalid = true;
 		failed = true;
 		for (EffectSource effect : effects) {
 			boolean effectfailed = false;
@@ -115,12 +116,14 @@ public class Skill extends YamlConfiguration {
 				}
 			}
 
+			if (effectinvalid) {
+				continue;
+			}
+			invalid = false;
 			if (effectfailed) {
 				for (ConditionSource con : effect.conditions) {
 					con.useCondition(user);
 				}
-				continue;
-			} else if (effectinvalid) {
 				continue;
 			}
 			failed = false;
@@ -137,7 +140,10 @@ public class Skill extends YamlConfiguration {
 				//cast target to user, block, or vanillaentity and execute for each target
 			}
 		}
-		if(failed){
+		if(invalid) {
+			//TODO tell them it's invalid
+			return;
+		} else if(failed) {
 			for (ConditionSource con : conditions) {
 				con.useCondition(user);
 			}
