@@ -21,129 +21,128 @@ import org.spout.vanilla.component.living.VanillaEntity;
  * @author Multitallented
  */
 public class Skill extends YamlConfiguration {
-    public final ConfigurationHolder NAME = new ConfigurationHolder("default", "name");
-    public final HashSet<SkillComponentType> TYPES = new HashSet<>();
-    public final ConfigurationHolder TARGET;
-    public final ConfigurationHolder CONDITIONS;
-    public final ConfigurationHolder EFFECTS;
+	public final ConfigurationHolder NAME = new ConfigurationHolder("default", "name");
+	public final HashSet<SkillComponentType> TYPES = new HashSet<>();
+	public final ConfigurationHolder TARGET;
+	public final ConfigurationHolder CONDITIONS;
+	public final ConfigurationHolder EFFECTS;
 
-    private final Proxis plugin;
-    private final HashSet<ConditionSource> conditions;
-    private final TargetSource target;
-    private final HashSet<EffectSource> effects;
+	private final Proxis plugin;
+	private final HashSet<ConditionSource> conditions;
+	private final TargetSource target;
+	private final HashSet<EffectSource> effects;
 
-    public Skill(Proxis plugin, String filename, TargetSource target, HashSet<EffectSource> effects, HashSet<ConditionSource> conditions) {
-            super(new File(new File(plugin.getDataFolder(), "skills"), filename + ".yml"));
-            this.plugin = plugin;
-            this.target = target;
-            this.conditions = conditions;
-            this.effects = effects;
-            //TODO add all configs from the sources to their ConfigurationHolders
-    }
+	public Skill(Proxis plugin, String filename, TargetSource target, HashSet<EffectSource> effects, HashSet<ConditionSource> conditions) {
+			super(new File(new File(plugin.getDataFolder(), "skills"), filename + ".yml"));
+			this.plugin = plugin;
+			this.target = target;
+			this.conditions = conditions;
+			this.effects = effects;
+			//TODO add all configs from the sources to their ConfigurationHolders
+	}
 
-    public HashSet<EffectSource> getEffects() {
-            return effects;
-    }
+	public HashSet<EffectSource> getEffects() {
+			return effects;
+	}
 
-    public void execute(User user) {
-        ArrayList<ArrayList<Object>> targets = target.getTarget(this, user);
+	public void execute(User user) {
+		ArrayList<ArrayList<Object>> targets = target.getTarget(this, user);
 
-        if (targets.isEmpty()) {
-            //TODO tell them it's invalid target
-            return;
-        }
+		if (targets.isEmpty()) {
+			//TODO tell them it's invalid target
+			return;
+		}
 
-        Player self = plugin.getEngine().getPlayer(user.getName(), true);
-        boolean failed = false;
-        boolean invalid = false;
-        conditionCheck: for (ConditionSource con : conditions) {
-            switch (con.testCondition(user)) {
-                case FAILED:
-                    failed = true;
-                    break conditionCheck;
-                case REFUND:
-                    invalid = true;
-                    break;
-            }
-        }
-        if (failed) {
-            for (ConditionSource con : conditions) {
-                con.useCondition(user);
-            }
-            //TODO tell them it failed
-            return;
-        } else if (invalid) {
-            //TODO tell them it's invalid
-            return;
-        }
+		Player self = plugin.getEngine().getPlayer(user.getName(), true);
+		boolean failed = false;
+		boolean invalid = false;
+		conditionCheck: for (ConditionSource con : conditions) {
+			switch (con.testCondition(user)) {
+				case FAILED:
+					failed = true;
+					break conditionCheck;
+				case REFUND:
+					invalid = true;
+					break;
+			}
+		}
+		if (failed) {
+			for (ConditionSource con : conditions) {
+				con.useCondition(user);
+			}
+			//TODO tell them it failed
+			return;
+		} else if (invalid) {
+			//TODO tell them it's invalid
+			return;
+		}
 
-        for (EffectSource effect : effects) {
-            effect.failed = false;
-            effect.invalid = false;
-            outer: for (ConditionSource con : effect.conditions) {
-                for (Object tar : targets.get(target.getIndex(effect.TARGET.getString()))) {
-                    if (tar instanceof Player) {
-                        User u = UserManager.getUser(((Player) tar).getName());
-                        switch (con.testCondition(u)) {
-                            case REFUND:
-                                effect.invalid = true;
-                                break;
-                            case FAILED:
-                                effect.failed = true;
-                                break outer;
-                        }
-                    } else if (tar instanceof VanillaEntity) {
-                        switch (con.testCondition((VanillaEntity) tar)) {
-                            case REFUND:
-                                effect.invalid = true;
-                                break;
-                            case FAILED:
-                                effect.failed = true;
-                                break outer;
-                        }
-                    } else if (tar instanceof Block) {
-                        switch (con.testCondition((Block) tar)) {
-                            case REFUND:
-                                effect.invalid = true;
-                                break;
-                            case FAILED:
-                                effect.failed = true;
-                                break outer;
-                        }
-                    }
+		failed = true;
+		for (EffectSource effect : effects) {
+			boolean effectfailed = false;
+			boolean effectinvalid = false;
+			outer: for (ConditionSource con : effect.conditions) {
+				for (Object tar : targets.get(target.getIndex(effect.TARGET.getString()))) {
+					if (tar instanceof Player) {
+						User u = UserManager.getUser(((Player) tar).getName());
+						switch (con.testCondition(u)) {
+							case REFUND:
+								effectinvalid = true;
+								break;
+							case FAILED:
+								effectfailed = true;
+								break outer;
+						}
+					} else if (tar instanceof VanillaEntity) {
+						switch (con.testCondition((VanillaEntity) tar)) {
+							case REFUND:
+								effectinvalid = true;
+								break;
+							case FAILED:
+								effectfailed = true;
+								break outer;
+						}
+					} else if (tar instanceof Block) {
+						switch (con.testCondition((Block) tar)) {
+							case REFUND:
+								effectinvalid = true;
+								break;
+							case FAILED:
+								effectfailed = true;
+								break outer;
+						}
+					}
+				}
+			}
 
-                }
-            }
+			if (effectfailed) {
+				for (ConditionSource con : effect.conditions) {
+					con.useCondition(user);
+				}
+				continue;
+			} else if (effectinvalid) {
+				continue;
+			}
+			failed = false;
 
-            if (effect.failed) {
-                for (ConditionSource con : effect.conditions) {
-                    con.useCondition(user);
-                }
-                continue;
-            } else if (effect.invalid) {
-                continue;
-            }
-            for (Object tar : targets.get(target.getIndex(effect.TARGET.getString()))) {
-                if (tar instanceof Player) {
-                    User u = UserManager.getUser(((Player) tar).getName());
-                    effect.execute(user, u);
-                } else if (tar instanceof VanillaEntity) {
-                    effect.execute(user, (VanillaEntity) tar);
-                } else if (tar instanceof Block) {
-                    effect.execute(user, (Block) tar);
-                }
-                //cast target to user, block, or vanillaentity and execute for each target
-            }
-        }
-        skillFailCheck: for (EffectSource effect : effects) {
-        	if(!effect.failed || !effect.invalid) break skillFailCheck;
-        	else {
-        		for (ConditionSource con : conditions) {
-                    con.useCondition(user);
-                }
-                //TODO tell them it failed
-                return;
-        	}
-        }
-    }
+			for (Object tar : targets.get(target.getIndex(effect.TARGET.getString()))) {
+				if (tar instanceof Player) {
+					User u = UserManager.getUser(((Player) tar).getName());
+					effect.execute(user, u);
+				} else if (tar instanceof VanillaEntity) {
+					effect.execute(user, (VanillaEntity) tar);
+				} else if (tar instanceof Block) {
+					effect.execute(user, (Block) tar);
+				}
+				//cast target to user, block, or vanillaentity and execute for each target
+			}
+		}
+		if(failed){
+			for (ConditionSource con : conditions) {
+				con.useCondition(user);
+			}
+			//TODO tell them it failed
+			return;
+		}
+	}
 }
