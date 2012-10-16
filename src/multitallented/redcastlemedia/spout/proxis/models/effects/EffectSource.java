@@ -6,6 +6,7 @@ import multitallented.redcastlemedia.spout.proxis.models.conditions.ConditionSou
 import multitallented.redcastlemedia.spout.proxis.models.skill.SkillSource;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
 import org.spout.api.geo.cuboid.Block;
+import org.spout.api.util.config.ConfigurationHolder;
 import org.spout.vanilla.component.living.VanillaEntity;
 
 /**
@@ -13,7 +14,8 @@ import org.spout.vanilla.component.living.VanillaEntity;
  * @author Multitallented
  */
 public abstract class EffectSource extends SkillSource {
-	public final HashSet<ConditionSource> conditions = new HashSet<>();
+    public final HashSet<ConditionSource> conditions = new HashSet<>();
+    public final ConfigurationHolder TARGET = new ConfigurationHolder("self", "target");
 
 	public EffectSource() {
 		super(SourceType.EFFECT);
