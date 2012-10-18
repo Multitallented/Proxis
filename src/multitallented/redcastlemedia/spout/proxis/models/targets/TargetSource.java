@@ -12,10 +12,12 @@ import multitallented.redcastlemedia.spout.proxis.models.users.User;
  */
 public abstract class TargetSource extends SkillSource {
     public TargetSource() {
-        super(SourceType.SELECTOR);
+        super(SourceType.TARGET);
     }
     
     public abstract ArrayList<ArrayList<Object>> getTarget(Skill skill, User user);
     
     public abstract ArrayList<Class> getTargetTypes();
+    
+    public abstract TargetConfiguration getTargetConfig();
 }

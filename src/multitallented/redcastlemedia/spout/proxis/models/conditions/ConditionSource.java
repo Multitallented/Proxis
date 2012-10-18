@@ -4,7 +4,6 @@ import multitallented.redcastlemedia.spout.proxis.models.SourceType;
 import multitallented.redcastlemedia.spout.proxis.models.skill.SkillResult;
 import multitallented.redcastlemedia.spout.proxis.models.skill.SkillSource;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
-import org.spout.api.entity.Entity;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.vanilla.component.living.VanillaEntity;
 
@@ -13,8 +12,11 @@ import org.spout.vanilla.component.living.VanillaEntity;
  * @author Multitallented
  */
 public abstract class ConditionSource extends SkillSource {
-    public ConditionSource() {
+    public final String name;
+    
+    public ConditionSource(String name) {
         super(SourceType.CONDITION);
+        this.name = name;
     }
     
     public abstract SkillResult testCondition(User user);
@@ -24,4 +26,6 @@ public abstract class ConditionSource extends SkillSource {
     public abstract SkillResult testCondition(VanillaEntity ve);
     
     public abstract void useCondition(User user);
+    
+    public abstract ConditionConfiguration getConditionConfig();
 }

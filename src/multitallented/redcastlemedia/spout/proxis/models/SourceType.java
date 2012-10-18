@@ -7,5 +7,5 @@ package multitallented.redcastlemedia.spout.proxis.models;
 public enum SourceType {
     CONDITION,
     EFFECT,
-    SELECTOR
+    TARGET
 }

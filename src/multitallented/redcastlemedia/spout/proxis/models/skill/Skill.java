@@ -6,6 +6,7 @@ import java.util.HashSet;
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import multitallented.redcastlemedia.spout.proxis.managers.UserManager;
 import multitallented.redcastlemedia.spout.proxis.models.conditions.ConditionSource;
+import multitallented.redcastlemedia.spout.proxis.models.effects.EffectConfiguration;
 import multitallented.redcastlemedia.spout.proxis.models.effects.EffectSource;
 import multitallented.redcastlemedia.spout.proxis.models.targets.TargetSource;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
@@ -38,6 +39,20 @@ public class Skill extends YamlConfiguration {
         this.target = target;
         this.conditions = conditions;
         this.effects = effects;
+        ArrayList<EffectConfiguration> effectConfigs = new ArrayList<>();
+        for (EffectSource es : effects) {
+            effectConfigs.add(es.getEffectConfig());
+            TYPES.addAll(es.TYPES);
+        }
+        EFFECTS = new ConfigurationHolder(effectConfigs, "effects");
+        TARGET = new ConfigurationHolder(target.getTargetConfiguration(), "target");
+        TYPES.addAll(target.TYPES);
+        ArrayList<ConditionConfiguration> conditionConfigs = new ArrayList<>();
+        for (ConditionSource cs : conditions) {
+            conditionConfigs.add(cs.getConditionCongiruation());
+            TYPES.addAll(cs.TYPES);
+        }
+        CONDITIONS = new ConfigurationHolder(conditionConfigs, "conditions");
         //TODO add all configs from the sources to their ConfigurationHolders
     }
 
@@ -84,34 +99,13 @@ public class Skill extends YamlConfiguration {
             boolean effectinvalid = false;
             outer: for (ConditionSource con : effect.conditions) {
                 for (Object tar : targets.get(target(effect.TARGET.getString()))) {
-                    if (tar instanceof Player) {
-                        User u = UserManager.getUser(((Player) tar).getName());
-                        switch (con.testCondition(u)) {
-                            case REFUND:
-                                effectinvalid = true;
-                                break;
-                            case FAILED:
-                                effectfailed = true;
-                                break outer;
-                        }
-                    } else if (tar instanceof VanillaEntity) {
-                        switch (con.testCondition((VanillaEntity) tar)) {
-                            case REFUND:
-                                effectinvalid = true;
-                                break;
-                            case FAILED:
-                                effectfailed = true;
-                                break outer;
-                        }
-                    } else if (tar instanceof Block) {
-                        switch (con.testCondition((Block) tar)) {
-                            case REFUND:
-                                effectinvalid = true;
-                                break;
-                            case FAILED:
-                                effectfailed = true;
-                                break outer;
-                        }
+                    switch (con.testCondition(tar)) {
+                        case REFUND:
+                            effectinvalid = true;
+                            break;
+                        case FAILED:
+                            effectfailed = true;
+                            break outer;
                     }
                 }
             }
@@ -129,14 +123,7 @@ public class Skill extends YamlConfiguration {
             failed = false;
 
             for (Object tar : targets.get(target.getIndex(effect.TARGET.getString()))) {
-                if (tar instanceof Player) {
-                    User u = UserManager.getUser(((Player) tar).getName());
-                    effect.execute(user, u);
-                } else if (tar instanceof VanillaEntity) {
-                    effect.execute(user, (VanillaEntity) tar);
-                } else if (tar instanceof Block) {
-                    effect.execute(user, (Block) tar);
-                }
+                effect.execute(user, tar);
                 //cast target to user, block, or vanillaentity and execute for each target
             }
         }
