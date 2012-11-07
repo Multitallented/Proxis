@@ -1,10 +1,11 @@
 package multitallented.redcastlemedia.spout.proxis.models.targets;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import multitallented.redcastlemedia.spout.proxis.models.SourceType;
-import multitallented.redcastlemedia.spout.proxis.models.skills.Skill;
 import multitallented.redcastlemedia.spout.proxis.models.skills.SkillSource;
-import multitallented.redcastlemedia.spout.proxis.models.users.User;
+import org.spout.api.util.config.ConfigurationNode;
 
 /**
  *
@@ -15,7 +16,5 @@ public abstract class TargetSource extends SkillSource {
         super(SourceType.TARGET);
     }
     
-    public abstract ArrayList<ArrayList<Object>> getTargets(Skill skill, User user);
-    
-    public abstract ArrayList<Class> getTargetTypes();
+    public abstract HashMap<String, List<String>> getTargets(HashMap<String, List<String>> types, ConfigurationNode node);
 }

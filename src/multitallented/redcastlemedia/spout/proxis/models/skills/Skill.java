@@ -1,12 +1,13 @@
 package multitallented.redcastlemedia.spout.proxis.models.skills;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import multitallented.redcastlemedia.spout.proxis.models.conditions.ConditionSource;
 import multitallented.redcastlemedia.spout.proxis.models.effects.EffectSource;
-import multitallented.redcastlemedia.spout.proxis.models.targets.TargetSource;
+import multitallented.redcastlemedia.spout.proxis.models.targets.Target;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
 import org.spout.api.util.config.ConfigurationHolder;
 import org.spout.api.util.config.yaml.YamlConfiguration;
@@ -19,10 +20,10 @@ public class Skill extends YamlConfiguration {
     public final ConfigurationHolder NAME = new ConfigurationHolder("default", "name");
     private final Proxis plugin;
     private final HashSet<ConditionSource> conditions;
-    private final TargetSource target;
-    private final HashSet<EffectSource> effects;
+    private final Target target;
+    private final HashMap<EffectSource, String> effects;
 
-    public Skill(Proxis plugin, String filename, TargetSource target, HashSet<EffectSource> effects, HashSet<ConditionSource> conditions) {
+    public Skill(Proxis plugin, String filename, Target target, HashMap<EffectSource, String> effects, HashSet<ConditionSource> conditions) {
         super(new File(new File(plugin.getDataFolder(), "skills"), filename + ".yml"));
         this.plugin = plugin;
         this.target = target;
@@ -30,12 +31,12 @@ public class Skill extends YamlConfiguration {
         this.effects = effects;
     }
 
-    public HashSet<EffectSource> getEffects() {
+    public HashMap<EffectSource, String> getEffects() {
         return effects;
     }
 
     public void execute(User user) {
-        ArrayList<ArrayList<Object>> targets = target.getTargets(this, user);
+        HashMap<String, List<String>> targets = target.getTargets();
 
         if (targets.isEmpty()) {
             //TODO tell them it's invalid target
@@ -68,11 +69,11 @@ public class Skill extends YamlConfiguration {
 
         invalid = true;
         failed = true;
-        for (EffectSource effect : effects) {
+        for (EffectSource effect : effects.keySet()) {
             boolean effectfailed = false;
             boolean effectinvalid = false;
             outer: for (ConditionSource con : effect.conditions) {
-                for (Object tar : targets.get(target(effect.target)) {
+                for (Object tar : targets.get(effects.get(effect))) {
                     switch (testConditionOnUnknownTarget(con, tar)) {
                         case REFUND:
                             effectinvalid = true;
@@ -96,7 +97,7 @@ public class Skill extends YamlConfiguration {
             }
             failed = false;
 
-            for (Object tar : targets.get(target.getIndex(effect.TARGET.getString()))) {
+            for (Object tar : targets.get(targets.get(effects.get()))) {
                 effect.execute(user, tar);
                 //cast target to user, block, or vanillaentity and execute for each target
             }
