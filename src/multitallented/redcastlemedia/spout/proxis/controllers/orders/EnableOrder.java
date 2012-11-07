@@ -33,7 +33,7 @@ public class EnableOrder {
         
         //load skill jars
         SkillJarManager sjm = new SkillJarManager(proxis);
-        sjm.loadSkills();
+        sjm.loadSkillSources();
         
         TypeManager tm = new TypeManager(proxis);
         

@@ -15,9 +15,7 @@ public abstract class TargetSource extends SkillSource {
         super(SourceType.TARGET);
     }
     
-    public abstract ArrayList<ArrayList<Object>> getTarget(Skill skill, User user);
+    public abstract ArrayList<ArrayList<Object>> getTargets(Skill skill, User user);
     
     public abstract ArrayList<Class> getTargetTypes();
-    
-    public abstract TargetConfiguration getTargetConfig();
 }

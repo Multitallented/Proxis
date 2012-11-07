@@ -5,11 +5,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import multitallented.redcastlemedia.spout.proxis.models.conditions.ConditionSource;
-import multitallented.redcastlemedia.spout.proxis.models.effects.EffectConfiguration;
 import multitallented.redcastlemedia.spout.proxis.models.effects.EffectSource;
 import multitallented.redcastlemedia.spout.proxis.models.targets.TargetSource;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
-import org.spout.api.entity.Player;
 import org.spout.api.util.config.ConfigurationHolder;
 import org.spout.api.util.config.yaml.YamlConfiguration;
 
@@ -37,7 +35,7 @@ public class Skill extends YamlConfiguration {
     }
 
     public void execute(User user) {
-        ArrayList<ArrayList<Object>> targets = target.getTarget(this, user);
+        ArrayList<ArrayList<Object>> targets = target.getTargets(this, user);
 
         if (targets.isEmpty()) {
             //TODO tell them it's invalid target
@@ -74,8 +72,8 @@ public class Skill extends YamlConfiguration {
             boolean effectfailed = false;
             boolean effectinvalid = false;
             outer: for (ConditionSource con : effect.conditions) {
-                for (Object tar : targets.get(target(effect.TARGET.getString()))) {
-                    switch (con.testCondition(tar)) {
+                for (Object tar : targets.get(target(effect.target)) {
+                    switch (testConditionOnUnknownTarget(con, tar)) {
                         case REFUND:
                             effectinvalid = true;
                             break;
@@ -113,5 +111,9 @@ public class Skill extends YamlConfiguration {
             //TODO tell them it failed
             return;
         }
+    }
+    
+    private SkillResult testConditionOnUnknownTarget(Condition con, Object target) {
+        
     }
 }
