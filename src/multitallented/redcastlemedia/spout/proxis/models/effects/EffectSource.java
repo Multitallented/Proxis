@@ -3,7 +3,7 @@ package multitallented.redcastlemedia.spout.proxis.models.effects;
 import java.util.HashSet;
 import multitallented.redcastlemedia.spout.proxis.models.SourceType;
 import multitallented.redcastlemedia.spout.proxis.models.conditions.ConditionSource;
-import multitallented.redcastlemedia.spout.proxis.models.skill.SkillSource;
+import multitallented.redcastlemedia.spout.proxis.models.skills.SkillSource;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
 
 /**

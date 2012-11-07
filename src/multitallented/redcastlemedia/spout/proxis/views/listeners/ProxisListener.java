@@ -1,4 +1,4 @@
-package multitallented.redcastlemedia.spout.proxis.listeners;
+package multitallented.redcastlemedia.spout.proxis.views.listeners;
 
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import org.spout.api.event.EventHandler;

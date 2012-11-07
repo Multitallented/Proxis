@@ -1,8 +1,8 @@
 package multitallented.redcastlemedia.spout.proxis.models.conditions;
 
 import multitallented.redcastlemedia.spout.proxis.models.SourceType;
-import multitallented.redcastlemedia.spout.proxis.models.skill.SkillResult;
-import multitallented.redcastlemedia.spout.proxis.models.skill.SkillSource;
+import multitallented.redcastlemedia.spout.proxis.models.skills.SkillResult;
+import multitallented.redcastlemedia.spout.proxis.models.skills.SkillSource;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.vanilla.component.living.VanillaEntity;
@@ -27,5 +27,7 @@ public abstract class ConditionSource extends SkillSource {
     
     public abstract void useCondition(User user);
     
-    public abstract ConditionConfiguration getConditionConfig();
+    public abstract void useCondition(Block block);
+    
+    public abstract void useCondition(VanillaEntity ve);
 }

@@ -1,4 +1,4 @@
-package multitallented.redcastlemedia.spout.proxis.models.skill;
+package multitallented.redcastlemedia.spout.proxis.models.skills;
 
 /**
  *

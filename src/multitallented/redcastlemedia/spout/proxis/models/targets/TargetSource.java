@@ -2,8 +2,8 @@ package multitallented.redcastlemedia.spout.proxis.models.targets;
 
 import java.util.ArrayList;
 import multitallented.redcastlemedia.spout.proxis.models.SourceType;
-import multitallented.redcastlemedia.spout.proxis.models.skill.Skill;
-import multitallented.redcastlemedia.spout.proxis.models.skill.SkillSource;
+import multitallented.redcastlemedia.spout.proxis.models.skills.Skill;
+import multitallented.redcastlemedia.spout.proxis.models.skills.SkillSource;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
 
 /**

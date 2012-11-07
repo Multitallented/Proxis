@@ -1,4 +1,4 @@
-package multitallented.redcastlemedia.spout.proxis.orders;
+package multitallented.redcastlemedia.spout.proxis.controllers.orders;
 
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 

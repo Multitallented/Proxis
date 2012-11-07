@@ -1,9 +1,10 @@
-package multitallented.redcastlemedia.spout.proxis.orders;
+package multitallented.redcastlemedia.spout.proxis.controllers.orders;
 
 import multitallented.redcastlemedia.spout.proxis.Proxis;
-import multitallented.redcastlemedia.spout.proxis.commands.ProxisCommands;
-import multitallented.redcastlemedia.spout.proxis.listeners.ProxisListener;
-import multitallented.redcastlemedia.spout.proxis.managers.SkillManager;
+import multitallented.redcastlemedia.spout.proxis.controllers.SkillJarManager;
+import multitallented.redcastlemedia.spout.proxis.controllers.TypeManager;
+import multitallented.redcastlemedia.spout.proxis.views.commands.ProxisCommands;
+import multitallented.redcastlemedia.spout.proxis.views.listeners.ProxisListener;
 import org.spout.api.command.CommandRegistrationsFactory;
 import org.spout.api.command.annotated.AnnotatedCommandRegistrationFactory;
 import org.spout.api.command.annotated.SimpleAnnotatedCommandExecutorFactory;
@@ -31,11 +32,13 @@ public class EnableOrder {
         proxis.config.save();
         
         //load skill jars
-        SkillManager sm = new SkillManager(proxis);
-        sm.loadAllSkills();
+        SkillJarManager sjm = new SkillJarManager(proxis);
+        sjm.loadSkills();
+        
+        TypeManager tm = new TypeManager(proxis);
         
         //init managers
         
-        proxis.setManagers(sm);
+        proxis.setManagers(sjm);
     }
 }

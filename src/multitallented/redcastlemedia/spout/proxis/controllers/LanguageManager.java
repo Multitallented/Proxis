@@ -1,4 +1,4 @@
-package multitallented.redcastlemedia.spout.proxis.managers;
+package multitallented.redcastlemedia.spout.proxis.controllers;
 
 /**
  * This file handles all of the language translations and text.

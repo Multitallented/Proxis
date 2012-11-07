@@ -1,4 +1,4 @@
-package multitallented.redcastlemedia.spout.proxis.commands;
+package multitallented.redcastlemedia.spout.proxis.views.commands;
 
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import org.spout.api.command.CommandContext;

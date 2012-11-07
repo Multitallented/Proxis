@@ -1,21 +1,17 @@
-package multitallented.redcastlemedia.spout.proxis.models.skill;
+package multitallented.redcastlemedia.spout.proxis.models.skills;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import multitallented.redcastlemedia.spout.proxis.Proxis;
-import multitallented.redcastlemedia.spout.proxis.managers.UserManager;
 import multitallented.redcastlemedia.spout.proxis.models.conditions.ConditionSource;
 import multitallented.redcastlemedia.spout.proxis.models.effects.EffectConfiguration;
 import multitallented.redcastlemedia.spout.proxis.models.effects.EffectSource;
 import multitallented.redcastlemedia.spout.proxis.models.targets.TargetSource;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
-import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
-import org.spout.api.geo.cuboid.Block;
 import org.spout.api.util.config.ConfigurationHolder;
 import org.spout.api.util.config.yaml.YamlConfiguration;
-import org.spout.vanilla.component.living.VanillaEntity;
 
 /**
  *
@@ -23,11 +19,6 @@ import org.spout.vanilla.component.living.VanillaEntity;
  */
 public class Skill extends YamlConfiguration {
     public final ConfigurationHolder NAME = new ConfigurationHolder("default", "name");
-    public final HashSet<SkillComponentType> TYPES = new HashSet<>();
-    public final ConfigurationHolder TARGET;
-    public final ConfigurationHolder CONDITIONS;
-    public final ConfigurationHolder EFFECTS;
-
     private final Proxis plugin;
     private final HashSet<ConditionSource> conditions;
     private final TargetSource target;
@@ -39,21 +30,6 @@ public class Skill extends YamlConfiguration {
         this.target = target;
         this.conditions = conditions;
         this.effects = effects;
-        ArrayList<EffectConfiguration> effectConfigs = new ArrayList<>();
-        for (EffectSource es : effects) {
-            effectConfigs.add(es.getEffectConfig());
-            TYPES.addAll(es.TYPES);
-        }
-        EFFECTS = new ConfigurationHolder(effectConfigs, "effects");
-        TARGET = new ConfigurationHolder(target.getTargetConfiguration(), "target");
-        TYPES.addAll(target.TYPES);
-        ArrayList<ConditionConfiguration> conditionConfigs = new ArrayList<>();
-        for (ConditionSource cs : conditions) {
-            conditionConfigs.add(cs.getConditionCongiruation());
-            TYPES.addAll(cs.TYPES);
-        }
-        CONDITIONS = new ConfigurationHolder(conditionConfigs, "conditions");
-        //TODO add all configs from the sources to their ConfigurationHolders
     }
 
     public HashSet<EffectSource> getEffects() {
@@ -68,7 +44,7 @@ public class Skill extends YamlConfiguration {
             return;
         }
 
-        Player self = plugin.getEngine().getPlayer(user.getName(), true);
+        //Player self = plugin.getEngine().getPlayer(user.NAME, true);
         boolean failed = false;
         boolean invalid = false;
         conditionCheck: for (ConditionSource con : conditions) {

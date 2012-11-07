@@ -1,4 +1,4 @@
-package multitallented.redcastlemedia.spout.proxis.managers;
+package multitallented.redcastlemedia.spout.proxis.controllers;
 
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import multitallented.redcastlemedia.spout.proxis.models.users.User;
