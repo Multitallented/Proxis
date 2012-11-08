@@ -96,11 +96,19 @@ public class Skill extends YamlConfiguration {
                 for (int i=0; i<difference ; i++) {
                     pendingConditions.get(index).add(SkillResult.FAILED);
                 }
+                return;
             }
+            boolean success = false;
             for (int i : pendingConditions.keySet()) {
                 if (pendingConditionsSize.get(i) > pendingConditions.get(i).size()) {
                     return;
                 }
+                if (!pendingConditions.get(i).contains(SkillResult.FAILED)) {
+                    success = true;
+                }
+            }
+            if (!success) {
+                return;
             }
             pendingConditions.clear();
             pendingConditionsSize.clear();
