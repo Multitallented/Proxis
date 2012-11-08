@@ -2,6 +2,7 @@ package multitallented.redcastlemedia.spout.proxis.controllers.orders;
 
 import multitallented.redcastlemedia.spout.proxis.Proxis;
 import multitallented.redcastlemedia.spout.proxis.controllers.SkillJarManager;
+import multitallented.redcastlemedia.spout.proxis.controllers.SkillManager;
 import multitallented.redcastlemedia.spout.proxis.controllers.TypeManager;
 import multitallented.redcastlemedia.spout.proxis.views.commands.ProxisCommands;
 import multitallented.redcastlemedia.spout.proxis.views.listeners.ProxisListener;
@@ -35,10 +36,14 @@ public class EnableOrder {
         SkillJarManager sjm = new SkillJarManager(proxis);
         sjm.loadSkillSources();
         
+        //init other managers
+        SkillManager sm = new SkillManager(proxis);
+        
         TypeManager tm = new TypeManager(proxis);
         
-        //init managers
+        proxis.setManagers(sjm, sm, tm);
         
-        proxis.setManagers(sjm);
+        //register listeners
+        proxis.getEngine().getEventManager().registerEvents(new ProxisListener(proxis), proxis);
     }
 }
