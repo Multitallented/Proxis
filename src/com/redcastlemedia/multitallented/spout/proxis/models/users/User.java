@@ -6,6 +6,7 @@ import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
 import com.redcastlemedia.multitallented.spout.proxis.models.states.UserState;
 import java.util.HashMap;
 import java.util.HashSet;
+import org.spout.vanilla.source.DamageCause;
 
 /**
  *
@@ -21,15 +22,21 @@ public class User {
     private int mana;
     private final HashMap<String, Long> cooldowns;
     private SkillClass skillClass;
-    private final int kills;
-    private final int deaths;
-    private final int killStreak;
-    private final int highestKillStreak;
+    private int kills;
+    private int deaths;
+    private int killStreak;
+    private int highestKillStreak;
     private final HashMap<String, Integer> favoriteWeapons;
     private final HashMap<String, Integer> favoriteSkills;
     private final HashMap<String, Integer> favoriteVictim;
     private final HashMap<String, Integer> favoriteKiller;
-    private final int points;
+    private int points;
+    private String lastSkillUsed = "";
+    private long timeLastSkillUsed = 0L;
+    private String lastDamager = "";
+    private long lastDamageTime = 0L;
+    private long lastDeath = 0L;
+    private DamageCause lastDamageCause = DamageCause.UNKNOWN;
 
     
     public User(Proxis plugin, String name, HashMap<String, Double> experience,
@@ -56,5 +63,133 @@ public class User {
         this.favoriteKiller = favoriteKiller;
         this.points = points;
         //TODO finish this
+    }
+    public int getKillStreak() {
+        return killStreak;
+    }
+    public void setKillStreak(int killStreak) {
+        this.killStreak = killStreak;
+    }
+    public void addFavoriteWeapon(String name) {
+        if (favoriteWeapons.containsKey(name)) {
+            favoriteWeapons.put(name, favoriteWeapons.get(name) + 1);
+        } else {
+            favoriteWeapons.put(name, 1);
+        }
+    }
+    public String getFavoriteWeapon() {
+        String bestWeapon = "None: 0";
+        int high = 0;
+        for (String s : favoriteWeapons.keySet()) {
+            if (high < favoriteWeapons.get(s)) {
+                bestWeapon = s + ": " + favoriteWeapons.get(s);
+            }
+        }
+        return bestWeapon;
+    }
+    public void addFavoriteSkills(String name) {
+        if (favoriteSkills.containsKey(name)) {
+            favoriteSkills.put(name, favoriteSkills.get(name) + 1);
+        } else {
+            favoriteSkills.put(name, 1);
+        }
+    }
+    public String getFavoriteSkill() {
+        String bestSkill = "None: 0";
+        int high = 0;
+        for (String s : favoriteSkills.keySet()) {
+            if (high < favoriteSkills.get(s)) {
+                bestSkill = s + ": " + favoriteSkills.get(s);
+            }
+        }
+        return bestSkill;
+    }
+    public void addFavoriteVictim(String name) {
+        if (favoriteVictim.containsKey(name)) {
+            favoriteVictim.put(name, favoriteVictim.get(name) + 1);
+        } else {
+            favoriteVictim.put(name, 1);
+        }
+    }
+    public String getFavoriteVictim() {
+        String bestSkill = "None: 0";
+        int high = 0;
+        for (String s : favoriteVictim.keySet()) {
+            if (high < favoriteVictim.get(s)) {
+                bestSkill = s + ": " + favoriteVictim.get(s);
+            }
+        }
+        return bestSkill;
+    }
+    public void addFavoriteKiller(String name) {
+        if (favoriteKiller.containsKey(name)) {
+            favoriteKiller.put(name, favoriteKiller.get(name) + 1);
+        } else {
+            favoriteKiller.put(name, 1);
+        }
+    }
+    public String getFavoriteKiller() {
+        String bestSkill = "None: 0";
+        int high = 0;
+        for (String s : favoriteKiller.keySet()) {
+            if (high < favoriteKiller.get(s)) {
+                bestSkill = s + ": " + favoriteKiller.get(s);
+            }
+        }
+        return bestSkill;
+    }
+    public long getLastDeath() {
+        return lastDeath;
+    }
+    public void setLastDeath(long time) {
+        this.lastDeath = time;
+    }
+    public int getDeaths() {
+        return deaths;
+    }
+    public void setDeaths(int deaths) {
+        this.deaths = deaths;
+    }
+    public DamageCause getLastDamageCause() {
+        return lastDamageCause;
+    }
+    public void setLastDamageCause(DamageCause dc) {
+        this.lastDamageCause = dc;
+    }
+    public long getLastDamageTime() {
+        return lastDamageTime;
+    }
+    public void setLastDamageTime(long time) {
+        this.lastDamageTime = time;
+    }
+    public long getLastSkillTime() {
+        return timeLastSkillUsed;
+    }
+    public void setLastSkillTime(long time) {
+        this.timeLastSkillUsed = time;
+    }
+    public String getLastSkill() {
+        return lastSkillUsed;
+    }
+    public void setLastSkill(String name) {
+        this.lastSkillUsed = name;
+    }
+    public String getLastDamager() {
+        return lastDamager;
+    }
+    public void setLastDamager(String name) {
+        this.lastDamager = name;
+    }
+    public int getPoints() {
+        return points;
+    }
+    public void setPoints(int points) {
+        this.points = points;
+    }
+    public int getKills() {
+        return kills;
+    }
+    public void setKills(int kills) {
+        this.kills = kills;
     }
 }

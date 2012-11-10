@@ -18,6 +18,10 @@ public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     public static final ConfigurationHolder DATABASE_USERNAME = new ConfigurationHolder("root", "database-username");
     public static final ConfigurationHolder DATABASE_PASSWORD = new ConfigurationHolder("pass", "database-password");
     public static final ConfigurationHolder DATABASE_NAME = new ConfigurationHolder("proxis", "database-name");
+    public static final ConfigurationHolder DEATH_GRACE_PERIOD_SECONDS = new ConfigurationHolder(120, "death-grace-period-seconds");
+    public static final ConfigurationHolder POINTS_PER_KILLSTREAK = new ConfigurationHolder(1, "points-per-killstreak");
+    public static final ConfigurationHolder MONEY_PER_POINT = new ConfigurationHolder(10.0, "money-per-point");
+    
 
     
     public ProxisConfiguration(File dataFolder) {

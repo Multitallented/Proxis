@@ -4,19 +4,22 @@ import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.models.ProxisConfiguration;
 import com.redcastlemedia.multitallented.spout.proxis.models.SkillClass;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
-import com.redcastlemedia.multitallented.spout.proxis.models.states.UserState;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
 import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.logging.Level;
+import org.spout.api.chat.style.ColorChatStyle;
+import org.spout.api.entity.Entity;
+import org.spout.api.entity.Player;
 import org.spout.api.util.config.yaml.YamlConfiguration;
+import org.spout.vanilla.component.inventory.PlayerInventory;
+import org.spout.vanilla.component.living.VanillaEntity;
+import org.spout.vanilla.source.DamageCause;
 
 
 /**
@@ -35,6 +38,213 @@ public class UserManager {
             return users.get(username);
         } else {
             return loadUser(username);
+        }
+    }
+    
+    public void handlePlayerDeath(String name) {
+        User user = getUser(name);
+        
+        Player player = proxis.getEngine().getPlayer(user.getLastDamager(), true);
+        if (player == null || !player.hasPermission("proxis.scorepoints")) {
+            return;
+        }
+        if (user.getLastDeath() + (ProxisConfiguration.DEATH_GRACE_PERIOD_SECONDS.getLong()* 1000) > System.currentTimeMillis()) {
+            player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + " " + user.NAME + " was killed too recently. No points awarded.");
+            return;
+        }
+        User dUser = getUser(user.getLastDamager());
+        //TODO level range invalid?
+        user.setDeaths(user.getDeaths() + 1);
+        dUser.setKills(dUser.getKills() + 1);
+        
+        double econBonus = 0.0;
+        //TODO award money?
+        /*
+        if (econ != null) {
+            double balance = econ.bankBalance(player.getName()).balance;
+            if (balance < psm.getEconBaseStolen()) {
+                if (balance > 0) {
+                    econBonus += balance;
+                    econPay = econBonus;
+                }
+                if (balance - econPay > 0) {
+                    econBonus += (balance - econPay) * psm.getEconPercentStolen();
+                    econPay = econBonus;
+                }
+                if (balance - econPay - psm.getEconBaseDrop() >0) {
+                    econPay += psm.getEconBaseDrop();
+                } else if (balance > 0) {
+                    econPay = balance;
+                }
+                balance = econ.bankWithdraw(player.getName(), econPay).balance;
+                if (balance >0) {
+                    econPay = balance * psm.getEconPercentDrop();
+                    econ.bankWithdraw(player.getName(), econPay);
+                }
+            }
+            econBonus += psm.getEconBase();
+        }
+         */
+        dUser.addFavoriteWeapon(player.get(PlayerInventory.class).getItemInHand().name());
+        
+        user.addFavoriteKiller(dUser.NAME);
+        
+        double killStreakBonus = ProxisConfiguration.POINTS_PER_KILLSTREAK.getInt() * dUser.getKillStreak();
+        dUser.setKillStreak(dUser.getKillStreak() + 1);
+        
+        econBonus += dUser.getKillStreak() * ProxisConfiguration.POINTS_PER_KILLSTREAK.getInt() * ProxisConfiguration.MONEY_PER_POINT.getInt();
+        if (dUser.getKillStreak() >= 3) {
+            for (String s : proxis.getEngine().getAllPlayers()) {
+                Player p = proxis.getEngine().getPlayer(s, true);
+                if (p == null) {
+                    return;
+                }
+                p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + player.getDisplayName() + " is on a killstreak of " + ColorChatStyle.RED + dUser.getKillStreak());
+            }
+        }
+        
+        double killJoyBonus = psm.getPointBonusKillJoy() * psv.getKillstreak();
+        econBonus += psv.getKillstreak() * psm.getEconBonusKillJoy();
+        if (psv.getKillstreak() >= 3) {
+            plugin.getServer().broadcastMessage(ChatColor.GRAY + "[HeroScoreboard] " + dPlayer.getDisplayName() + " just ended "
+                    + player.getDisplayName() + "'s killstreak of " + ChatColor.RED + psv.getKillstreak());
+        }
+        if (ps.getHighestKillstreak() < ps.getKillstreak()) {
+            ps.setHighestKillstreak(ps.getKillstreak());
+        }
+        
+        double points = psm.getPointBase();
+        double preTotalValuables = 0;
+        points += killStreakBonus + killJoyBonus;
+        EnumMap<Material, Double> pointValuables = psm.getPointValuables();
+        EnumMap<Material, Double> econValuables = psm.getEconValuables();
+        for (ItemStack is : player.getInventory().getContents()) {
+            if (is != null && pointValuables.containsKey(is.getType()))
+                preTotalValuables += pointValuables.get(is.getType());
+            if (is != null && econValuables.containsKey(is.getType()))
+                econBonus += econValuables.get(is.getType());
+        }
+        points += preTotalValuables;
+        
+        double healthBonus = 0;
+        if ((dHero == null && dPlayer.getHealth() <= 5)
+                || (dHero != null && dHero.getHealth() <= dHero.getMaxHealth() / 4)) {
+            healthBonus += psm.getPointQuarterHealth() + psm.getPointHalfHealth();
+            econBonus += psm.getEconHalfHealth() + psm.getEconQuarterHealth();
+        } else if ((dHero == null && dPlayer.getHealth() <= 10)
+                || (dHero != null && dHero.getHealth() <= dHero.getMaxHealth() / 2)) {
+            healthBonus += psm.getPointHalfHealth();
+            econBonus += psm.getEconHalfHealth();
+        }
+        points += healthBonus;
+        
+        double pointLevelBonus = 0;
+        if (hero != null) {
+            int levelDifference = hero.getLevel() - dHero.getLevel();
+            if (levelDifference > 0) {
+                pointLevelBonus = levelDifference * psm.getPointBonusLevel();
+                points += pointLevelBonus;
+                econBonus += levelDifference * psm.getEconBonusLevel();
+            }
+        }
+        //pay econ bonus
+        if (econ != null)
+            econ.bankDeposit(dPlayer.getName(), econBonus); 
+        //save points
+        ps.setPoints(ps.getPoints() + points);
+        
+        psm.setPlayerStats(dPlayer.getName(), ps);
+        psm.addPlayerStatsDeath(player.getName());
+        
+        player.sendMessage(ChatColor.GRAY + "[HeroScoreboard] Death: -" + ChatColor.RED + psm.getPointLoss() + "pts");
+        
+        //display points
+        long interval = 10L;
+        if (points > 0) {
+            final double pointBase = points;
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                dPlayer.sendMessage(ChatColor.GRAY + "[HeroScoreboard] Kill: +" + ChatColor.RED + pointBase + "pts");
+
+            }
+            }, interval);
+            interval += 10L;
+        }
+        if (preTotalValuables > 0) {
+            final double pointValuable = preTotalValuables;
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                dPlayer.sendMessage(ChatColor.GRAY + "[HeroScoreboard] Enemy Items: +" + ChatColor.RED + pointValuable + "pts");
+            }
+            }, 10L);
+            interval += 10L;
+        }
+        if (pointLevelBonus > 0) {
+            final double pts = pointLevelBonus;
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                dPlayer.sendMessage(ChatColor.GRAY + "[HeroScoreboard] Level Difference: +" + ChatColor.RED + pts + "pts");
+            }
+            }, interval);
+            interval += 10L;
+        }
+        if (healthBonus > 0) {
+            final double ptsHealth = healthBonus;
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                dPlayer.sendMessage(ChatColor.GRAY + "[HeroScoreboard] Low Health: +" + ChatColor.RED + ptsHealth + "pts");
+            }
+            }, interval);
+            interval += 10L;
+        }
+        if (killStreakBonus > 0) {
+            final double pts = killStreakBonus;
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                dPlayer.sendMessage(ChatColor.GRAY + "[HeroScoreboard] KillStreak: +" + ChatColor.RED + pts + "pts");
+            }
+            }, interval);
+            interval += 10L;
+        }
+        if (killJoyBonus > 0) {
+            final double pts = killJoyBonus;
+            plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+            @Override
+            public void run() {
+                dPlayer.sendMessage(ChatColor.GRAY + "[HeroScoreboard] KillJoy: +" + ChatColor.RED + pts + "pts");
+            }
+            }, interval);
+            interval += 10L;
+        }
+        final double pts = points;
+        plugin.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+        @Override
+        public void run() {
+            dPlayer.sendMessage(ChatColor.GRAY + "[HeroScoreboard] Total: +" + ChatColor.RED + pts + "pts");
+        }
+        }, interval);
+    }
+    
+    public void putDamage(User user, Entity damager, DamageCause cause) {
+        user.setLastDamageTime(System.currentTimeMillis());
+        if (cause != null) {
+            user.setLastDamageCause(cause);
+        } else {
+            user.setLastDamageCause(DamageCause.UNKNOWN);
+        }
+        if (damager == null) {
+            user.setLastDamager("null");
+        } else if (damager.getClass().equals(Player.class)) {
+            User uDamager = proxis.getUserManager().getUser(((Player) damager).getName());
+            user.setLastDamager(uDamager.NAME);
+        } else if (damager instanceof VanillaEntity) {
+            VanillaEntity ve = (VanillaEntity) damager;
+            //TODO store name of entity in lastDamager
         }
     }
     
@@ -188,6 +398,9 @@ public class UserManager {
             }
             for (String s : config.getChild("experience").getKeys(false)) {
                 experience.put(s, config.getNode("experience." + s).getDouble());
+            }
+            for (String s : config.getChild("skills").getKeys(false)) {
+                
             }
             //TODO get skills
         } catch (Exception ex) {

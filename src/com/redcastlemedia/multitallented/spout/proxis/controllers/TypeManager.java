@@ -40,6 +40,10 @@ public class TypeManager {
             types.put(s, sources);
         }
     }
+    
+    public void gainExp(String username, String type, double exp) {
+        //TODO finish this
+    }
 }
 /*
  * fire:
