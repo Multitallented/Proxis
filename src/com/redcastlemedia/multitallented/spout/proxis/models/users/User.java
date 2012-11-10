@@ -1,73 +1,60 @@
 package com.redcastlemedia.multitallented.spout.proxis.models.users;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
+import com.redcastlemedia.multitallented.spout.proxis.models.SkillClass;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
 import com.redcastlemedia.multitallented.spout.proxis.models.states.UserState;
-import java.io.File;
 import java.util.HashMap;
 import java.util.HashSet;
-import org.spout.api.util.config.ConfigurationHolder;
 
 /**
  *
  * @author Multitallented
  */
 public class User {
-    public static final ConfigurationHolder LOCALE = new ConfigurationHolder("locale", "en");
+    public String locale;
     public final String NAME;
-    public final HashSet<UserState> states = new HashSet<>();
-    private HashMap<String, Double> experience = new HashMap<>();
-    private HashMap<String, Skill> skills = new HashMap<>();
+    private final HashSet<UserState> states = new HashSet<>();
+    private final HashMap<String, Double> experience;
+    private final HashMap<String, Skill> skills;
+    private int hp;
+    private int mana;
+    private final HashMap<String, Long> cooldowns;
+    private SkillClass skillClass;
+    private final int kills;
+    private final int deaths;
+    private final int killStreak;
+    private final int highestKillStreak;
+    private final HashMap<String, Integer> favoriteWeapons;
+    private final HashMap<String, Integer> favoriteSkills;
+    private final HashMap<String, Integer> favoriteVictim;
+    private final HashMap<String, Integer> favoriteKiller;
+    private final int points;
 
-    public User(File file, Proxis plugin) {
-        NAME = file.getName().replace(".yml", "");
-        loadSkills(plugin);
-    }
     
-    public synchronized HashMap<String, Double> getExperience() {
-        return experience;
-    }
-    public synchronized void putExperience(String type, double amount) {
-        experience.put(type, amount);
-    }
-    
-    public synchronized void putSkill(String name, Skill skill) {
-        skills.put(name, skill);
-    }
-    
-    public synchronized void removeSkill(String name) {
-        skills.remove(name);
-    }
-    
-    private void loadSkills(Proxis plugin) {
-//        outer: for (String s : super.getChild("skills").getKeys(false)) {
-//            TargetSource ts = plugin.getSkillManager().getTargetSource(super.getNode("skills." + s + ".target.pattern").getString());
-//            if (ts == null) {
-//                plugin.log(Level.SEVERE, Proxis.NAME + " " + NAME + ".yml skill " + s + " target is corrupted!");
-//                continue;
-//            }
-//            
-//            HashSet<EffectSource> effects = new HashSet<>();
-//            for (String effectName : super.getChild("skills." + s + ".effects").getKeys(false)) {
-//                EffectSource es = plugin.getSkillManager().getEffectSource(effectName);
-//                if (es == null) {
-//                    plugin.log(Level.SEVERE, Proxis.NAME + " " + NAME + ".yml skill " + s + " " + es + " is corrupted!");
-//                    continue outer;
-//                }
-//                effects.add(es);
-//            }
-//            HashSet<ConditionSource> conditions = new HashSet<>();
-//            for (String conditionName : super.getChild("skills." + s + ".conditions").getKeys(false)) {
-//                ConditionSource cs = plugin.getSkillManager().getConditionSource(conditionName);
-//                if (cs == null) {
-//                    plugin.log(Level.SEVERE, Proxis.NAME + " " + NAME + ".yml skill " + s + " " + cs + " is corrupted!");
-//                    continue outer;
-//                }
-//                conditions.add(cs);
-//            }
-//            
-//            
-//            skills.put(s, new Skill(plugin, s, ts, effects, conditions));
-//        }
+    public User(Proxis plugin, String name, HashMap<String, Double> experience,
+            HashMap<String, Skill> skills, String locale, int hp, int mana, HashMap<String, Long> cooldowns,
+            SkillClass skillClass, int kills, int deaths, int killStreak, int highestKillStreak,
+            HashMap<String, Integer> favoriteWeapons, HashMap<String, Integer> favoriteSkills,
+            HashMap<String, Integer> favoriteVictim, HashMap<String, Integer> favoriteKiller,
+            int points) {
+        NAME = name;
+        this.experience = experience;
+        this.skills = skills;
+        this.locale = locale;
+        this.hp = hp;
+        this.mana = mana;
+        this.cooldowns = cooldowns;
+        this.skillClass = skillClass;
+        this.kills = kills;
+        this.deaths = deaths;
+        this.killStreak = killStreak;
+        this.highestKillStreak = highestKillStreak;
+        this.favoriteWeapons = favoriteWeapons;
+        this.favoriteSkills = favoriteSkills;
+        this.favoriteVictim = favoriteVictim;
+        this.favoriteKiller = favoriteKiller;
+        this.points = points;
+        //TODO finish this
     }
 }

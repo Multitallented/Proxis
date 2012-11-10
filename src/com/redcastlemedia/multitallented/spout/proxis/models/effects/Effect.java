@@ -26,7 +26,7 @@ public class Effect {
     public void execute(CastSkill cs, HashSet<Object> targetSet) {
         for (Object obj : targetSet) {
             if (obj.getClass().equals(Player.class)) {
-                es.execute(plugin, cs, UserManager.getUser(((Player) obj).getName()), node);
+                es.execute(plugin, cs, plugin.getUserManager().getUser(((Player) obj).getName()), node);
             } else if (obj.getClass().equals(Block.class)) {
                 es.execute(plugin, cs, (Block) obj, node);
             } else if (obj instanceof VanillaEntity) {

@@ -26,7 +26,7 @@ public class Condition {
     public void testCondition(CastSkill cts, HashSet<Object> targets) {
         for (Object obj : targets) {
             if (obj.getClass().equals(Player.class)) {
-                cs.testCondition(plugin, cts, UserManager.getUser(((Player) obj).getName()), node);
+                cs.testCondition(plugin, cts, plugin.getUserManager().getUser(((Player) obj).getName()), node);
             } else if (obj.getClass().equals(Block.class)) {
                 cs.testCondition(plugin, cts, (Block) obj, node);
             } else if (obj instanceof VanillaEntity) {
