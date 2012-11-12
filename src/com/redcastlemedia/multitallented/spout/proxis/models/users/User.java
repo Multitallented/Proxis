@@ -63,6 +63,24 @@ public class User {
         this.points = points;
         //TODO finish this
     }
+    public void setSkillClass(SkillClass skillClass) {
+        this.skillClass = skillClass;
+    }
+    public SkillClass getSkillClass() {
+        return skillClass;
+    }
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+    public int getMana() {
+        return mana;
+    }
+    public void setHP(int hp) {
+        this.hp = hp;
+    }
+    public int getHP() {
+        return hp;
+    }
     public void setHighestKillStreak(int amount) {
         highestKillStreak = amount;
     }

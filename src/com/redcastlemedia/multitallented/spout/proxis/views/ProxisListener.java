@@ -1,4 +1,4 @@
-package com.redcastlemedia.multitallented.spout.proxis.views.listeners;
+package com.redcastlemedia.multitallented.spout.proxis.views;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.api.events.SkillConditionEvent;

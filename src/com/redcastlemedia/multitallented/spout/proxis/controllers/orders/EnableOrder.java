@@ -6,8 +6,8 @@ import com.redcastlemedia.multitallented.spout.proxis.controllers.SkillJarManage
 import com.redcastlemedia.multitallented.spout.proxis.controllers.SkillManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.TypeManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.UserManager;
-import com.redcastlemedia.multitallented.spout.proxis.views.commands.ProxisCommands;
-import com.redcastlemedia.multitallented.spout.proxis.views.listeners.ProxisListener;
+import com.redcastlemedia.multitallented.spout.proxis.views.ProxisCommands;
+import com.redcastlemedia.multitallented.spout.proxis.views.ProxisListener;
 import org.spout.api.command.CommandRegistrationsFactory;
 import org.spout.api.command.annotated.AnnotatedCommandRegistrationFactory;
 import org.spout.api.command.annotated.SimpleAnnotatedCommandExecutorFactory;

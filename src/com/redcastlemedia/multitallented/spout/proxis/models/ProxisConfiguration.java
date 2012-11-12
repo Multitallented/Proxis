@@ -24,6 +24,8 @@ public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     public static final ConfigurationHolder POINTS_PER_DEATH = new ConfigurationHolder(-5, "kill.points-per-death");
     public static final ConfigurationHolder POINTS_PER_KILLSTREAK = new ConfigurationHolder(1, "kill.points-per-killstreak");
     public static final ConfigurationHolder POINTS_PER_KILLJOY = new ConfigurationHolder(1, "kill.points-per-killjoy");
+    public static final ConfigurationHolder POINTS_FOR_QUARTER_HP = new ConfigurationHolder(4, "kill.points-for-quarter-hp");
+    public static final ConfigurationHolder POINTS_FOR_HALF_HP = new ConfigurationHolder(2, "kill.points-for-half-hp");
     
     
 
