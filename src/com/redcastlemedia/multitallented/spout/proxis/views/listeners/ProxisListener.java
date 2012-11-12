@@ -55,4 +55,5 @@ public class ProxisListener implements Listener {
     public void onUserGainExp(UserGainExpEvent event) {
         proxis.getTypeManager().gainExp(event.getUsername(), event.getType(), event.getExp());
     }
+    //TODO addFavoriteSkill from listener
 }

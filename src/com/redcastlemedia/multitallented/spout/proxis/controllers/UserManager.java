@@ -1,6 +1,7 @@
 package com.redcastlemedia.multitallented.spout.proxis.controllers;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
+import com.redcastlemedia.multitallented.spout.proxis.models.LanguageConfiguration;
 import com.redcastlemedia.multitallented.spout.proxis.models.ProxisConfiguration;
 import com.redcastlemedia.multitallented.spout.proxis.models.SkillClass;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
@@ -42,6 +43,7 @@ public class UserManager {
     
     public void handlePlayerDeath(String name) {
         User user = getUser(name);
+        Player vPlayer = proxis.getEngine().getPlayer(name, true);
         
         Player player = proxis.getEngine().getPlayer(user.getLastDamager(), true);
         if (player == null || !player.hasPermission("proxis.scorepoints")) {
@@ -55,6 +57,7 @@ public class UserManager {
         //TODO level range invalid?
         user.setDeaths(user.getDeaths() + 1);
         dUser.setKills(dUser.getKills() + 1);
+        dUser.setKillStreak(dUser.getKillStreak() + 1);
         
         double econBonus = 0.0;
         //TODO award money?
@@ -85,7 +88,7 @@ public class UserManager {
         }
          */
         dUser.addFavoriteWeapon(player.get(Human.class).getInventory().getQuickbar().getCurrentItem().getMaterial().getDisplayName());
-        
+        dUser.addFavoriteVictim(user.NAME);
         user.addFavoriteKiller(dUser.NAME);
         
         double killStreakBonus = ProxisConfiguration.POINTS_PER_KILLSTREAK.getInt() * dUser.getKillStreak();
@@ -99,34 +102,39 @@ public class UserManager {
                     return;
                 }
                 User currentUser = proxis.getUserManager().getUser(p.getName());
-                
-                p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + player.getDisplayName() + " is on a killstreak of " + ColorChatStyle.RED + dUser.getKillStreak());
+                p.sendMessage(ColorChatStyle.GRAY + LanguageConfiguration.getTranslation(currentUser.getLocale(), "killstreak")
+                        .replace("%name", player.getDisplayName())
+                        .replace("%amount", ColorChatStyle.RED + "" + dUser.getKillStreak() + ColorChatStyle.GRAY));
+                //p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + player.getDisplayName() + " is on a killstreak of " + ColorChatStyle.RED + dUser.getKillStreak());
             }
         }
         
         
         double killJoyBonus = ProxisConfiguration.POINTS_PER_KILLJOY.getDouble() * user.getKillStreak();
         econBonus += ProxisConfiguration.MONEY_PER_POINT.getDouble() * killJoyBonus;
-        if (psv.getKillstreak() >= 3) {
-            plugin.getServer().broadcastMessage(ColorChatStyle.GRAY + Proxis.NAME + dPlayer.getDisplayName() + " just ended "
-                    + player.getDisplayName() + "'s killstreak of " + ChatColor.RED + psv.getKillstreak());
-        }
-        if (ps.getHighestKillstreak() < ps.getKillstreak()) {
-            ps.setHighestKillstreak(ps.getKillstreak());
+        if (dUser.getKillStreak() > 2) {
+            for (String s : proxis.getEngine().getAllPlayers()) {
+                Player p = proxis.getEngine().getPlayer(s, true);
+                if (p == null) {
+                    return;
+                }
+                User currentUser = proxis.getUserManager().getUser(p.getName());
+                p.sendMessage(ColorChatStyle.GRAY + LanguageConfiguration.getTranslation(currentUser.getLocale(), "killjoy")
+                        .replace("%name", player.getDisplayName())
+                        .replace("%victim", vPlayer.getDisplayName())
+                        .replace("%amount", ColorChatStyle.RED + "" + user.getKillStreak() + ColorChatStyle.GRAY));
+                //p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + player.getDisplayName() + " is on a killstreak of " + ColorChatStyle.RED + dUser.getKillStreak());
+            }
         }
         
-        double points = psm.getPointBase();
-        double preTotalValuables = 0;
-        points += killStreakBonus + killJoyBonus;
-        EnumMap<Material, Double> pointValuables = psm.getPointValuables();
-        EnumMap<Material, Double> econValuables = psm.getEconValuables();
-        for (ItemStack is : player.getInventory().getContents()) {
-            if (is != null && pointValuables.containsKey(is.getType()))
-                preTotalValuables += pointValuables.get(is.getType());
-            if (is != null && econValuables.containsKey(is.getType()))
-                econBonus += econValuables.get(is.getType());
+        if (dUser.getHighestKillStreak() < dUser.getKillStreak()) {
+            dUser.setHighestKillStreak(dUser.getKillStreak());
         }
-        points += preTotalValuables;
+        user.setKillStreak(0);
+        
+        
+        double points = ProxisConfiguration.POINTS_PER_KILL.getInt();
+        points += killStreakBonus + killJoyBonus;
         
         double healthBonus = 0;
         if ((dHero == null && dPlayer.getHealth() <= 5)
@@ -150,13 +158,10 @@ public class UserManager {
             }
         }
         //pay econ bonus
-        if (econ != null)
-            econ.bankDeposit(dPlayer.getName(), econBonus); 
+        /*if (econ != null) {
+            econ.bankDeposit(dPlayer.getName(), econBonus);
+        }*/
         //save points
-        ps.setPoints(ps.getPoints() + points);
-        
-        psm.setPlayerStats(dPlayer.getName(), ps);
-        psm.addPlayerStatsDeath(player.getName());
         
         player.sendMessage(ChatColor.GRAY + "[HeroScoreboard] Death: -" + ChatColor.RED + psm.getPointLoss() + "pts");
         

@@ -17,6 +17,11 @@ public class ProxisCommands {
         
     }
     
+    @Command(aliases = {"lang"}, usage = "en|ru|es|pt|it|hi|ma|fr", desc="sets your language")
+    public void setLanguage(CommandContext args, CommandSource source) {
+        proxis.getUserManager().getUser(source.getName()).setLocale(args.getString(0, "en"));
+    }
+    
     @Command(aliases = {"border"}, usage = "enable|disable|set [radius] [square|circle]", desc="controls the border")
     @CommandPermissions("dropletborder.control")
     public void commandRoot(CommandContext args, CommandSource source) {

@@ -63,6 +63,18 @@ public class User {
         this.points = points;
         //TODO finish this
     }
+    public void setHighestKillStreak(int amount) {
+        highestKillStreak = amount;
+    }
+    public int getHighestKillStreak() {
+        return highestKillStreak;
+    }
+    public void setLocale(String locale) {
+        this.locale = locale;
+    }
+    public String getLocale() {
+        return locale;
+    }
     public int getKillStreak() {
         return killStreak;
     }
