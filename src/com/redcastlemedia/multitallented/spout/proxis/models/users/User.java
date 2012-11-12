@@ -3,7 +3,6 @@ package com.redcastlemedia.multitallented.spout.proxis.models.users;
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.models.SkillClass;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
-import com.redcastlemedia.multitallented.spout.proxis.models.states.UserState;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.spout.vanilla.source.DamageCause;

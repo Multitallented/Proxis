@@ -12,15 +12,19 @@ import org.spout.api.util.config.yaml.YamlConfiguration;
  */
 public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     public static final ConfigurationHolder LOCALE = new ConfigurationHolder("en", "locale");
-    public static final ConfigurationHolder USE_DB = new ConfigurationHolder(false, "use-database");
-    public static final ConfigurationHolder DATABASE_ADDRESS = new ConfigurationHolder("192.168.1.10", "database-address");
-    public static final ConfigurationHolder DATABASE_PORT = new ConfigurationHolder("3237", "database-port");
-    public static final ConfigurationHolder DATABASE_USERNAME = new ConfigurationHolder("root", "database-username");
-    public static final ConfigurationHolder DATABASE_PASSWORD = new ConfigurationHolder("pass", "database-password");
-    public static final ConfigurationHolder DATABASE_NAME = new ConfigurationHolder("proxis", "database-name");
-    public static final ConfigurationHolder DEATH_GRACE_PERIOD_SECONDS = new ConfigurationHolder(120, "death-grace-period-seconds");
-    public static final ConfigurationHolder POINTS_PER_KILLSTREAK = new ConfigurationHolder(1, "points-per-killstreak");
-    public static final ConfigurationHolder MONEY_PER_POINT = new ConfigurationHolder(10.0, "money-per-point");
+    public static final ConfigurationHolder USE_DB = new ConfigurationHolder(false, "database.use-database");
+    public static final ConfigurationHolder DATABASE_ADDRESS = new ConfigurationHolder("192.168.1.10", "database.database-address");
+    public static final ConfigurationHolder DATABASE_PORT = new ConfigurationHolder("3237", "database.database-port");
+    public static final ConfigurationHolder DATABASE_USERNAME = new ConfigurationHolder("root", "database.database-username");
+    public static final ConfigurationHolder DATABASE_PASSWORD = new ConfigurationHolder("pass", "database.database-password");
+    public static final ConfigurationHolder DATABASE_NAME = new ConfigurationHolder("proxis", "database.database-name");
+    public static final ConfigurationHolder DEATH_GRACE_PERIOD_SECONDS = new ConfigurationHolder(120, "kill.death-grace-period-seconds");
+    public static final ConfigurationHolder MONEY_PER_POINT = new ConfigurationHolder(10.0, "kill.money-per-point");
+    public static final ConfigurationHolder POINTS_PER_KILL = new ConfigurationHolder(10, "kill.points-per-kill");
+    public static final ConfigurationHolder POINTS_PER_DEATH = new ConfigurationHolder(-5, "kill.points-per-death");
+    public static final ConfigurationHolder POINTS_PER_KILLSTREAK = new ConfigurationHolder(1, "kill.points-per-killstreak");
+    public static final ConfigurationHolder POINTS_PER_KILLJOY = new ConfigurationHolder(1, "kill.points-per-killjoy");
+    
     
 
     

@@ -1,13 +1,12 @@
 package com.redcastlemedia.multitallented.spout.proxis.models.effects;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
-import com.redcastlemedia.multitallented.spout.proxis.controllers.UserManager;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill.CastSkill;
 import java.util.HashSet;
+import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.api.util.config.ConfigurationNode;
-import org.spout.vanilla.component.living.VanillaEntity;
 
 /**
  *
@@ -27,10 +26,10 @@ public class Effect {
         for (Object obj : targetSet) {
             if (obj.getClass().equals(Player.class)) {
                 es.execute(plugin, cs, plugin.getUserManager().getUser(((Player) obj).getName()), node);
+            } else if (obj.getClass().equals(Entity.class)) {
+                es.execute(plugin, cs, (Entity) obj, node);
             } else if (obj.getClass().equals(Block.class)) {
                 es.execute(plugin, cs, (Block) obj, node);
-            } else if (obj instanceof VanillaEntity) {
-                es.execute(plugin, cs, (VanillaEntity) obj, node);
             }
         }
     }

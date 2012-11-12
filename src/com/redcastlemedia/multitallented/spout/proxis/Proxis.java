@@ -7,7 +7,9 @@ import com.redcastlemedia.multitallented.spout.proxis.controllers.TypeManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.UserManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.orders.DisableOrder;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.orders.EnableOrder;
+import com.redcastlemedia.multitallented.spout.proxis.models.LanguageConfiguration;
 import com.redcastlemedia.multitallented.spout.proxis.models.ProxisConfiguration;
+import java.io.File;
 import java.util.logging.Level;
 import org.spout.api.UnsafeMethod;
 import org.spout.api.plugin.CommonPlugin;
@@ -27,7 +29,9 @@ public class Proxis extends CommonPlugin {
     @Override
     public void onLoad() {
         ProxisConfiguration conf = new ProxisConfiguration(getDataFolder());
+        LanguageConfiguration lconf = new LanguageConfiguration(new File(getDataFolder(), "languages.yml"));
         conf.load();
+        lconf.load();
     }
     
     @Override

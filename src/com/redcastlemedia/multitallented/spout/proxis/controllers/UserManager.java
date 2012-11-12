@@ -17,8 +17,7 @@ import org.spout.api.chat.style.ColorChatStyle;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.util.config.yaml.YamlConfiguration;
-import org.spout.vanilla.component.inventory.PlayerInventory;
-import org.spout.vanilla.component.living.VanillaEntity;
+import org.spout.vanilla.component.living.Human;
 import org.spout.vanilla.source.DamageCause;
 
 
@@ -85,7 +84,7 @@ public class UserManager {
             econBonus += psm.getEconBase();
         }
          */
-        dUser.addFavoriteWeapon(player.get(PlayerInventory.class).getItemInHand().name());
+        dUser.addFavoriteWeapon(player.get(Human.class).getInventory().getQuickbar().getCurrentItem().getMaterial().getDisplayName());
         
         user.addFavoriteKiller(dUser.NAME);
         
@@ -99,14 +98,17 @@ public class UserManager {
                 if (p == null) {
                     return;
                 }
+                User currentUser = proxis.getUserManager().getUser(p.getName());
+                
                 p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + player.getDisplayName() + " is on a killstreak of " + ColorChatStyle.RED + dUser.getKillStreak());
             }
         }
         
-        double killJoyBonus = psm.getPointBonusKillJoy() * psv.getKillstreak();
-        econBonus += psv.getKillstreak() * psm.getEconBonusKillJoy();
+        
+        double killJoyBonus = ProxisConfiguration.POINTS_PER_KILLJOY.getDouble() * user.getKillStreak();
+        econBonus += ProxisConfiguration.MONEY_PER_POINT.getDouble() * killJoyBonus;
         if (psv.getKillstreak() >= 3) {
-            plugin.getServer().broadcastMessage(ChatColor.GRAY + "[HeroScoreboard] " + dPlayer.getDisplayName() + " just ended "
+            plugin.getServer().broadcastMessage(ColorChatStyle.GRAY + Proxis.NAME + dPlayer.getDisplayName() + " just ended "
                     + player.getDisplayName() + "'s killstreak of " + ChatColor.RED + psv.getKillstreak());
         }
         if (ps.getHighestKillstreak() < ps.getKillstreak()) {

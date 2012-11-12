@@ -1,4 +1,4 @@
-package com.redcastlemedia.multitallented.spout.proxis.models.states;
+package com.redcastlemedia.multitallented.spout.proxis.models.users;
 
 /**
  *

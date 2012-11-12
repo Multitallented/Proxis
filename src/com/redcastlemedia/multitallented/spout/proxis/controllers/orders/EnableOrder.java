@@ -19,12 +19,6 @@ import org.spout.api.command.annotated.SimpleInjector;
  */
 public class EnableOrder {
     public EnableOrder(Proxis proxis) {
-        //dependencies
-        if (proxis.getEngine().getPluginManager().getPlugin("Vanilla") == null) {
-            proxis.getEngine().getPluginManager().disablePlugin(proxis);
-            return;
-        }
-        
         //commands
         CommandRegistrationsFactory<Class<?>> commandRegFactory = new AnnotatedCommandRegistrationFactory(new SimpleInjector(proxis), new SimpleAnnotatedCommandExecutorFactory());
         proxis.getEngine().getRootCommand().addSubCommands(proxis, ProxisCommands.class, commandRegFactory);
