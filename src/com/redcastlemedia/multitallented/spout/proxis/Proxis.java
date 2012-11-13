@@ -1,6 +1,7 @@
 package com.redcastlemedia.multitallented.spout.proxis;
 
 import com.redcastlemedia.multitallented.spout.proxis.controllers.ClassManager;
+import com.redcastlemedia.multitallented.spout.proxis.controllers.DamageManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.SkillJarManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.SkillManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.TypeManager;
@@ -25,6 +26,7 @@ public class Proxis extends CommonPlugin {
     private TypeManager tm;
     private UserManager um;
     private ClassManager cm;
+    private DamageManager dm;
     
     @Override
     public void onLoad() {
@@ -55,12 +57,13 @@ public class Proxis extends CommonPlugin {
     }
     
     public void setManagers(SkillJarManager sjm, SkillManager sm, TypeManager tm,
-            UserManager um, ClassManager cm) {
+            UserManager um, ClassManager cm, DamageManager dm) {
         this.sjm = sjm;
         this.sm = sm;
         this.tm = tm;
         this.um = um;
         this.cm = cm;
+        this.dm = dm;
     }
     public SkillJarManager getSkillJarManager() {
         return sjm;
@@ -76,5 +79,8 @@ public class Proxis extends CommonPlugin {
     }
     public ClassManager getClassManager() {
         return cm;
+    }
+    public DamageManager getDamageManager() {
+        return dm;
     }
 }

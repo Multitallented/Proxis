@@ -3,6 +3,7 @@ package com.redcastlemedia.multitallented.spout.proxis.models.users;
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.models.SkillClass;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
+import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.spout.vanilla.source.DamageCause;
@@ -63,6 +64,7 @@ public class User {
         this.points = points;
         //TODO finish this
     }
+    
     public void setSkillClass(SkillClass skillClass) {
         this.skillClass = skillClass;
     }

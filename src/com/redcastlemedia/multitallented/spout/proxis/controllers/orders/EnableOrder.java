@@ -2,6 +2,7 @@ package com.redcastlemedia.multitallented.spout.proxis.controllers.orders;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.ClassManager;
+import com.redcastlemedia.multitallented.spout.proxis.controllers.DamageManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.SkillJarManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.SkillManager;
 import com.redcastlemedia.multitallented.spout.proxis.controllers.TypeManager;
@@ -33,8 +34,9 @@ public class EnableOrder {
         TypeManager tm = new TypeManager(proxis);
         UserManager um = new UserManager(proxis);
         ClassManager cm = new ClassManager(proxis);
+        DamageManager dm = new DamageManager(proxis);
         
-        proxis.setManagers(sjm, sm, tm, um, cm);
+        proxis.setManagers(sjm, sm, tm, um, cm, dm);
         
         //register listeners
         proxis.getEngine().getEventManager().registerEvents(new ProxisListener(proxis), proxis);

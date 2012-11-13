@@ -92,7 +92,7 @@ public class UserManager {
         dUser.addFavoriteVictim(user.NAME);
         user.addFavoriteKiller(dUser.NAME);
         
-        double killStreakBonus = ProxisConfiguration.POINTS_PER_KILLSTREAK.getInt() * dUser.getKillStreak();
+        int killStreakBonus = ProxisConfiguration.POINTS_PER_KILLSTREAK.getInt() * dUser.getKillStreak();
         dUser.setKillStreak(dUser.getKillStreak() + 1);
         
         econBonus += dUser.getKillStreak() * ProxisConfiguration.POINTS_PER_KILLSTREAK.getInt() * ProxisConfiguration.MONEY_PER_POINT.getInt();
@@ -111,7 +111,7 @@ public class UserManager {
         }
         
         
-        double killJoyBonus = ProxisConfiguration.POINTS_PER_KILLJOY.getDouble() * user.getKillStreak();
+        int killJoyBonus = ProxisConfiguration.POINTS_PER_KILLJOY.getInt() * user.getKillStreak();
         econBonus += ProxisConfiguration.MONEY_PER_POINT.getDouble() * killJoyBonus;
         if (dUser.getKillStreak() > 2) {
             for (String s : proxis.getEngine().getAllPlayers()) {
@@ -134,10 +134,10 @@ public class UserManager {
         user.setKillStreak(0);
         
         
-        double points = ProxisConfiguration.POINTS_PER_KILL.getInt();
+        int points = ProxisConfiguration.POINTS_PER_KILL.getInt();
         points += killStreakBonus + killJoyBonus;
         
-        double healthBonus = 0;
+        int healthBonus = 0;
         
         if (user.getHP() / user.getSkillClass().maxHP < 0.25) {
             healthBonus = ProxisConfiguration.POINTS_FOR_QUARTER_HP.getInt();
@@ -191,40 +191,48 @@ public class UserManager {
             interval += 10L;
         }*/
         if (healthBonus > 0) {
-            final double ptsHealth = healthBonus;
+            final int ptsHealth = healthBonus;
             proxis.getEngine().getScheduler().scheduleSyncDelayedTask(proxis, new Runnable() {
             @Override
             public void run() {
-                player.sendMessage(ChatColor.GRAY + "[HeroScoreboard] Low Health: +" + ChatColor.RED + ptsHealth + "pts");
+                player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + 
+                        LanguageConfiguration.getTranslation(dUser.getLocale(), "low-health")
+                        .replace("%amount", ColorChatStyle.RED + "" + ptsHealth + ColorChatStyle.GRAY));
             }
             }, interval, TaskPriority.NORMAL);
             interval += 10L;
         }
         if (killStreakBonus > 0) {
-            final double pts = killStreakBonus;
+            final int pts = killStreakBonus;
             proxis.getEngine().getScheduler().scheduleSyncDelayedTask(proxis, new Runnable() {
             @Override
             public void run() {
-                player.sendMessage(ChatColor.GRAY + "[HeroScoreboard] KillStreak: +" + ChatColor.RED + pts + "pts");
+                player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME +
+                        LanguageConfiguration.getTranslation(dUser.getLocale(), "killstreak-points")
+                        .replace("%amount", ColorChatStyle.RED + "" + pts + ColorChatStyle.GRAY));
             }
             }, interval, TaskPriority.NORMAL);
             interval += 10L;
         }
         if (killJoyBonus > 0) {
-            final double pts = killJoyBonus;
+            final int pts = killJoyBonus;
             proxis.getEngine().getScheduler().scheduleSyncDelayedTask(proxis, new Runnable() {
             @Override
             public void run() {
-                player.sendMessage(ChatColor.GRAY + "[HeroScoreboard] KillJoy: +" + ChatColor.RED + pts + "pts");
+                player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + 
+                        LanguageConfiguration.getTranslation(dUser.getLocale(), "killjoy-points")
+                        .replace("%amount", ColorChatStyle.RED + "" + pts + ColorChatStyle.GRAY));
             }
             }, interval, TaskPriority.NORMAL);
             interval += 10L;
         }
-        final double pts = points;
+        final int pts = points;
         proxis.getEngine().getScheduler().scheduleSyncDelayedTask(proxis, new Runnable() {
         @Override
         public void run() {
-            player.sendMessage(ChatColor.GRAY + "[HeroScoreboard] Total: +" + ChatColor.RED + pts + "pts");
+            player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + 
+                        LanguageConfiguration.getTranslation(dUser.getLocale(), "total-points")
+                        .replace("%amount", ColorChatStyle.RED + "" + pts + ColorChatStyle.GRAY));
         }
         }, interval, TaskPriority.NORMAL);
     }
@@ -243,11 +251,13 @@ public class UserManager {
             user.setLastDamager(uDamager.NAME);
         } else if (damager.getClass().equals(Entity.class)) {
             Entity ve = (Entity) damager;
+            //ve.get(TexturedRectangleComponent.class);
             //TODO store name of entity in lastDamager
         }
     }
     
     private User loadUser(String name) {
+        //TODO make this multi-threaded
         User user;
         if (ProxisConfiguration.USE_DB.getBoolean()) {
             user = loadDBUser(name);

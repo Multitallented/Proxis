@@ -5,10 +5,13 @@ import com.redcastlemedia.multitallented.spout.proxis.models.conditions.Conditio
 import com.redcastlemedia.multitallented.spout.proxis.models.effects.Effect;
 import com.redcastlemedia.multitallented.spout.proxis.models.targets.Target;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
+import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import org.spout.api.entity.Entity;
+import org.spout.api.geo.cuboid.Block;
 import org.spout.api.util.config.ConfigurationHolder;
 import org.spout.api.util.config.yaml.YamlConfiguration;
 
@@ -35,6 +38,20 @@ public class Skill extends YamlConfiguration {
         this.postCastConditions = postCastConditions;
         this.preCastEffects = preCastEffects;
         this.postCastEffects = postCastEffects;
+    }
+    
+    public void applyState(User user, UserState us) {
+        plugin.getDamageManager().putBuiltInUserStates(user.NAME, us.getDefaultStates());
+        us.apply(user);
+        //TODO apply State for duration + ticks?
+    }
+    
+    public void applyState(Block block, UserState us) {
+        //TODO applyState block
+    }
+    
+    public void applyState(Entity e, UserState us) {
+        //TODO applyState Entity
     }
     
     public void useSkill(User user) {
