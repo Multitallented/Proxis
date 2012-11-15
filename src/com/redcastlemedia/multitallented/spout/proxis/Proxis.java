@@ -27,11 +27,12 @@ public class Proxis extends CommonPlugin {
     private UserManager um;
     private ClassManager cm;
     private DamageManager dm;
+    public static LanguageConfiguration lconf;
     
     @Override
     public void onLoad() {
         ProxisConfiguration conf = new ProxisConfiguration(getDataFolder());
-        LanguageConfiguration lconf = new LanguageConfiguration(new File(getDataFolder(), "languages.yml"));
+        lconf = new LanguageConfiguration(new File(getDataFolder(), "languages.yml"));
         conf.load();
         lconf.load();
     }
