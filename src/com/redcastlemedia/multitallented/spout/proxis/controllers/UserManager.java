@@ -103,7 +103,7 @@ public class UserManager {
                     return;
                 }
                 User currentUser = proxis.getUserManager().getUser(p.getName());
-                p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + LanguageConfiguration.instance.getTranslation(currentUser.getLocale(), "killstreak")
+                p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + Proxis.lconf.getTranslation(currentUser.getLocale(), "killstreak")
                         .replace("%name", player.getDisplayName())
                         .replace("%amount", ColorChatStyle.RED + "" + dUser.getKillStreak() + ColorChatStyle.GRAY));
                 //p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + player.getDisplayName() + " is on a killstreak of " + ColorChatStyle.RED + dUser.getKillStreak());
@@ -120,7 +120,7 @@ public class UserManager {
                     return;
                 }
                 User currentUser = proxis.getUserManager().getUser(p.getName());
-                p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + LanguageConfiguration.instance.getTranslation(currentUser.getLocale(), "killjoy")
+                p.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + Proxis.lconf.getTranslation(currentUser.getLocale(), "killjoy")
                         .replace("%name", player.getDisplayName())
                         .replace("%victim", vPlayer.getDisplayName())
                         .replace("%amount", ColorChatStyle.RED + "" + user.getKillStreak() + ColorChatStyle.GRAY));
@@ -164,7 +164,7 @@ public class UserManager {
         }*/
         //save points
         
-        vPlayer.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + LanguageConfiguration.instance.getTranslation(user.getLocale(), "death")
+        vPlayer.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + Proxis.lconf.getTranslation(user.getLocale(), "death")
                 .replace("%amount", ColorChatStyle.RED + "" + ProxisConfiguration.POINTS_PER_DEATH.getInt() + ColorChatStyle.GRAY));
         
         //display points
@@ -174,7 +174,7 @@ public class UserManager {
             @Override
             public void run() {
                 player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + 
-                        LanguageConfiguration.instance.getTranslation(dUser.getLocale(), "kill")
+                        Proxis.lconf.getTranslation(dUser.getLocale(), "kill")
                         .replace("%amount", ColorChatStyle.RED + "" + ProxisConfiguration.POINTS_PER_KILL.getInt() + ColorChatStyle.GRAY));
             }
             }, interval, TaskPriority.NORMAL);
@@ -196,7 +196,7 @@ public class UserManager {
             @Override
             public void run() {
                 player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + 
-                        LanguageConfiguration.instance.getTranslation(dUser.getLocale(), "low-health")
+                        Proxis.lconf.getTranslation(dUser.getLocale(), "low-health")
                         .replace("%amount", ColorChatStyle.RED + "" + ptsHealth + ColorChatStyle.GRAY));
             }
             }, interval, TaskPriority.NORMAL);
@@ -208,7 +208,7 @@ public class UserManager {
             @Override
             public void run() {
                 player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME +
-                        LanguageConfiguration.instance.getTranslation(dUser.getLocale(), "killstreak-points")
+                        Proxis.lconf.getTranslation(dUser.getLocale(), "killstreak-points")
                         .replace("%amount", ColorChatStyle.RED + "" + pts + ColorChatStyle.GRAY));
             }
             }, interval, TaskPriority.NORMAL);
@@ -220,7 +220,7 @@ public class UserManager {
             @Override
             public void run() {
                 player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + 
-                        LanguageConfiguration.instance.getTranslation(dUser.getLocale(), "killjoy-points")
+                        Proxis.lconf.getTranslation(dUser.getLocale(), "killjoy-points")
                         .replace("%amount", ColorChatStyle.RED + "" + pts + ColorChatStyle.GRAY));
             }
             }, interval, TaskPriority.NORMAL);
@@ -231,7 +231,7 @@ public class UserManager {
         @Override
         public void run() {
             player.sendMessage(ColorChatStyle.GRAY + Proxis.NAME + 
-                        LanguageConfiguration.instance.getTranslation(dUser.getLocale(), "total-points")
+                        Proxis.lconf.getTranslation(dUser.getLocale(), "total-points")
                         .replace("%amount", ColorChatStyle.RED + "" + pts + ColorChatStyle.GRAY));
         }
         }, interval, TaskPriority.NORMAL);

@@ -8,36 +8,37 @@ import org.spout.api.event.HandlerList;
  *
  * @author Multitallented
  */
-public class UserGainExpEvent extends Event implements Cancellable {
+public class UserManaChangeEvent extends Event implements Cancellable {
     private static final HandlerList hList = new HandlerList();
     private String username;
-    private String type;
-    private double exp;
-    public UserGainExpEvent(String username, String type, double exp) {
+    private int mana;
+    private boolean cancelled = false;
+    public UserManaChangeEvent(String username, int mana) {
         this.username = username;
-        this.type = type;
-        this.exp = exp;
+        this.mana = mana;
     }
-    
     public String getUsername() {
         return username;
     }
     public void setUsername(String username) {
         this.username = username;
     }
-    public String getType() {
-        return type;
+    public double getManaChange() {
+        return mana;
     }
-    public void setType(String type) {
-        this.type = type;
+    public void setManaChange(int mana) {
+        this.mana = mana;
     }
-    public double getExp() {
-        return exp;
+
+    @Override
+    public void setCancelled(boolean bln) {
+        this.cancelled = bln;
     }
-    public void setExp(double exp) {
-        this.exp = exp;
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
     }
-    
     public static HandlerList getHandlerList() {
         return hList;
     }
@@ -45,13 +46,5 @@ public class UserGainExpEvent extends Event implements Cancellable {
     @Override
     public HandlerList getHandlers() {
         return hList;
-    }
-    @Override
-    public void setCancelled(boolean bln) {
-        this.cancelled = bln;
-    }
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
     }
 }

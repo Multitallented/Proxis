@@ -1,5 +1,6 @@
 package com.redcastlemedia.multitallented.spout.proxis.api.events;
 
+import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
 import org.spout.api.event.Cancellable;
 import org.spout.api.event.Event;
 import org.spout.api.event.HandlerList;
@@ -8,36 +9,37 @@ import org.spout.api.event.HandlerList;
  *
  * @author Multitallented
  */
-public class UserGainExpEvent extends Event implements Cancellable {
+public class SkillCastEvent extends Event implements Cancellable {
     private static final HandlerList hList = new HandlerList();
     private String username;
-    private String type;
-    private double exp;
-    public UserGainExpEvent(String username, String type, double exp) {
+    private boolean cancelled = false;
+    private Skill skill;
+    public SkillCastEvent(String username, Skill skill) {
         this.username = username;
-        this.type = type;
-        this.exp = exp;
+        this.skill = skill;
     }
-    
     public String getUsername() {
         return username;
     }
     public void setUsername(String username) {
         this.username = username;
     }
-    public String getType() {
-        return type;
+    public Skill getSkill() {
+        return skill;
     }
-    public void setType(String type) {
-        this.type = type;
+    public void setManaChange(Skill skill) {
+        this.skill = skill;
     }
-    public double getExp() {
-        return exp;
+
+    @Override
+    public void setCancelled(boolean bln) {
+        this.cancelled = bln;
     }
-    public void setExp(double exp) {
-        this.exp = exp;
+
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
     }
-    
     public static HandlerList getHandlerList() {
         return hList;
     }
@@ -45,13 +47,5 @@ public class UserGainExpEvent extends Event implements Cancellable {
     @Override
     public HandlerList getHandlers() {
         return hList;
-    }
-    @Override
-    public void setCancelled(boolean bln) {
-        this.cancelled = bln;
-    }
-    @Override
-    public boolean isCancelled() {
-        return cancelled;
     }
 }

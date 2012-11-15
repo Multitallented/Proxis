@@ -32,6 +32,7 @@ public abstract class SkillSource {
         return name;
     }
 
+    
     public boolean damageCheck(Player damager, Entity damagee) {
         return plugin.getEngine().getEventManager().callEvent(new EntityDamageEvent(damagee, 0, DamageCause.UNKNOWN, false, (Entity) damager)).isCancelled();
     }

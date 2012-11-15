@@ -65,6 +65,10 @@ public class User {
         //TODO finish this
     }
     
+    public HashSet<UserState> getStates() {
+        return states;
+    }
+    
     public void setSkillClass(SkillClass skillClass) {
         this.skillClass = skillClass;
     }

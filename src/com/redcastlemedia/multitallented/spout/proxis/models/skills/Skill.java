@@ -2,25 +2,29 @@ package com.redcastlemedia.multitallented.spout.proxis.models.skills;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.models.conditions.Condition;
+import com.redcastlemedia.multitallented.spout.proxis.models.conditions.ConditionSource;
 import com.redcastlemedia.multitallented.spout.proxis.models.effects.Effect;
 import com.redcastlemedia.multitallented.spout.proxis.models.targets.Target;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
+import com.redcastlemedia.multitallented.spout.proxis.models.users.states.BuiltInUserStates;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import org.spout.api.Spout;
 import org.spout.api.entity.Entity;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.api.util.config.ConfigurationHolder;
+import org.spout.api.util.config.ConfigurationNode;
 import org.spout.api.util.config.yaml.YamlConfiguration;
 
 /**
  *
  * @author Multitallented
  */
-public class Skill extends YamlConfiguration {
-    public final ConfigurationHolder NAME = new ConfigurationHolder("default", "name");
+public class Skill {
+    public final String NAME;
     private final Proxis plugin;
     private final ArrayList<HashMap<Condition, String>> preCastConditions;
     private final ArrayList<HashMap<Condition, String>> postCastConditions;
@@ -28,16 +32,44 @@ public class Skill extends YamlConfiguration {
     private final ArrayList<HashMap<Effect, String>> preCastEffects;
     private final ArrayList<HashMap<Effect, String>> postCastEffects;
 
-    public Skill(Proxis plugin, String filename, HashSet<Target> targets, ArrayList<HashMap<Effect, String>> preCastEffects,
+    public Skill(Proxis plugin, String name, HashSet<Target> targets, ArrayList<HashMap<Effect, String>> preCastEffects,
             ArrayList<HashMap<Effect, String>> postCastEffects, ArrayList<HashMap<Condition, String>> preCastConditions,
             ArrayList<HashMap<Condition, String>> postCastConditions) {
-        super(new File(new File(plugin.getDataFolder(), "skills"), filename + ".yml"));
+        NAME = name;
         this.plugin = plugin;
         this.targets = targets;
         this.preCastConditions = preCastConditions;
         this.postCastConditions = postCastConditions;
         this.preCastEffects = preCastEffects;
         this.postCastEffects = postCastEffects;
+        
+        for (HashMap<Condition, String> tempMap : preCastConditions) {
+            tempMap.put(new Condition(plugin, new ConditionSource("ConditionTargetable") {
+
+                        @Override
+                        public SkillResult testCondition(Proxis plugin, CastSkill cs, User user, HashMap<String, Object> node) {
+                            for (UserState us : user.getStates()) {
+                                if (us.getDefaultStates().contains(BuiltInUserStates.NO_INCOMING_SKILLS) ||
+                                        us.getDefaultStates().contains(BuiltInUserStates.NO_SKILLS)) {
+                                    us.sendCancelledMessage(((User) cs.getTargetMap().get("self").iterator().next()).NAME, UserState.CancelledMessageTypes.SKILL);
+                                    return SkillResult.FAILED;
+                                }
+                            }
+                            return SkillResult.NORMAL;
+                        }
+
+                        @Override
+                        public SkillResult testCondition(Proxis plugin, CastSkill cs, Block block, HashMap<String, Object> node) {
+                            return SkillResult.NORMAL;
+                        }
+
+                        @Override
+                        public SkillResult testCondition(Proxis plugin, CastSkill cs, Entity ve, HashMap<String, Object> node) {
+                            return SkillResult.NORMAL;
+                        }
+
+            }, null), "ConditionTargetable");
+        }
     }
     
     public void applyState(User user, UserState us) {

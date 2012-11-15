@@ -6,6 +6,7 @@ import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill.CastSk
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.SkillResult;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.SkillSource;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
+import java.util.HashMap;
 import org.spout.api.entity.Entity;
 import org.spout.api.geo.cuboid.Block;
 import org.spout.api.util.config.ConfigurationNode;
@@ -22,9 +23,9 @@ public abstract class ConditionSource extends SkillSource {
         this.name = name;
     }
     
-    public abstract SkillResult testCondition(Proxis plugin, CastSkill cs, User user, ConfigurationNode node);
+    public abstract SkillResult testCondition(Proxis plugin, CastSkill cs, User user, HashMap<String, Object> node);
     
-    public abstract SkillResult testCondition(Proxis plugin, CastSkill cs, Block block, ConfigurationNode node);
+    public abstract SkillResult testCondition(Proxis plugin, CastSkill cs, Block block, HashMap<String, Object> node);
     
-    public abstract SkillResult testCondition(Proxis plugin, CastSkill cs, Entity ve, ConfigurationNode node);
+    public abstract SkillResult testCondition(Proxis plugin, CastSkill cs, Entity ve, HashMap<String, Object> node);
 }

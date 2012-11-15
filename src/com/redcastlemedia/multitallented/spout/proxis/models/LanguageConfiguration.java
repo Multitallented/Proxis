@@ -91,7 +91,16 @@ public class LanguageConfiguration extends YamlConfiguration {
     public static final ConfigurationHolder MA_TOTAL_POINTS = new ConfigurationHolder("總%量點", "ma.total-points");
     public static final ConfigurationHolder HI_TOTAL_POINTS = new ConfigurationHolder("संपूर्ण %राशि अंक", "hi.total-points");
     //</editor-fold>
-    public static LanguageConfiguration instance;
+    //<editor-fold defaultstate="collapsed" desc="DENY_LOADING">
+    public static final ConfigurationHolder EN_DENY_LOADING = new ConfigurationHolder("Please wait while your character is loading.", "en.deny-loading");
+    public static final ConfigurationHolder DE_DENY_LOADING = new ConfigurationHolder("Bitte warten Sie Ihren Charakter wird geladen.", "de.deny-loading");
+    public static final ConfigurationHolder ES_DENY_LOADING = new ConfigurationHolder("Por favor, espere mientras tu personaje está cargando.", "es.deny-loading");
+    public static final ConfigurationHolder FR_DENY_LOADING = new ConfigurationHolder("S'il vous plaît patienter pendant que votre personnage se charge.", "fr.deny-loading");
+    public static final ConfigurationHolder RU_DENY_LOADING = new ConfigurationHolder("Подождите, пока ваш персонаж загружается.", "ru.deny-loading");
+    public static final ConfigurationHolder IT_DENY_LOADING = new ConfigurationHolder("Per favore attendi che il tuo personaggio sta caricando.", "it.deny-loading");
+    public static final ConfigurationHolder MA_DENY_LOADING = new ConfigurationHolder("請稍候，你的性格是加載。", "ma.deny-loading");
+    public static final ConfigurationHolder HI_DENY_LOADING = new ConfigurationHolder("कृपया प्रतीक्षा करें जब तक अपने चरित्र लोड हो रहा है.", "hi.deny-loading");
+    //</editor-fold>
     
     public LanguageConfiguration(File dataFile) {
         super(dataFile);
@@ -102,11 +111,16 @@ public class LanguageConfiguration extends YamlConfiguration {
                 ex.printStackTrace();
             }
         }
-        instance = this;
     }
     
+    /**
+     * Retrieves the localized message from languages.yml
+     * @param locale the 2 letter code for the language to be retrieved.
+     * @param name the name of the message to be retrieved from languages.yml
+     * @return the localized message
+     */
     public String getTranslation(String locale, String name) {
-        return replaceVars(this.getNode(locale + "." + name).getString(""), locale);
+        return replaceVars(getNode(locale + "." + name).getString(""), locale);
     }
     
     private static String replaceVars(String input, String locale) {

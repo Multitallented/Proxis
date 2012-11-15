@@ -11,7 +11,7 @@ import org.spout.api.util.config.yaml.YamlConfiguration;
  * @author Multitallented
  */
 public class ProxisConfiguration extends ConfigurationHolderConfiguration {
-    public static final ConfigurationHolder LOCALE = new ConfigurationHolder("en", "locale");
+    public static final ConfigurationHolder LOCALE = new ConfigurationHolder("en", "default-locale");
     //<editor-fold defaultstate="collapsed" desc="database">
     public static final ConfigurationHolder USE_DB = new ConfigurationHolder(false, "database.use-database");
     public static final ConfigurationHolder DATABASE_ADDRESS = new ConfigurationHolder("192.168.1.10", "database.database-address");

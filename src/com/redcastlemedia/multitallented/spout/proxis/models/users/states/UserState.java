@@ -54,4 +54,15 @@ public abstract class UserState extends EffectSource {
         apply(target);
         //TODO add to scheduler
     }
+    
+    public abstract void sendCancelledMessage(String username, CancelledMessageTypes type);
+    
+    public enum CancelledMessageTypes {
+        CHAT,
+        COMMAND,
+        HEAL,
+        DAMAGE,
+        SKILL,
+        MANA
+    }
 }
