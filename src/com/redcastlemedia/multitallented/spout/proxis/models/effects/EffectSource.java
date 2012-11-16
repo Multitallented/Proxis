@@ -7,10 +7,10 @@ import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill.CastSk
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.SkillSource;
 import com.redcastlemedia.multitallented.spout.proxis.models.targets.TargetSource;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
+import java.util.HashMap;
 import java.util.HashSet;
 import org.spout.api.entity.Entity;
 import org.spout.api.geo.cuboid.Block;
-import org.spout.api.util.config.ConfigurationNode;
 
 /**
  *
@@ -26,9 +26,9 @@ public abstract class EffectSource extends SkillSource {
         this.NAME = name;
     }
     
-    public abstract void execute(Proxis plugin, CastSkill cs, User target, ConfigurationNode node);
+    public abstract void execute(Proxis plugin, CastSkill cs, User target, HashMap<String, Object> node);
     
-    public abstract void execute(Proxis plugin, CastSkill cs, Entity target, ConfigurationNode node);
+    public abstract void execute(Proxis plugin, CastSkill cs, Entity target, HashMap<String, Object> node);
     
-    public abstract void execute(Proxis plugin, CastSkill cs, Block target, ConfigurationNode node);
+    public abstract void execute(Proxis plugin, CastSkill cs, Block target, HashMap<String, Object> node);
 }

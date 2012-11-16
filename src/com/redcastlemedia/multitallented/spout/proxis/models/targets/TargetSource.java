@@ -3,8 +3,8 @@ package com.redcastlemedia.multitallented.spout.proxis.models.targets;
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.models.SourceType;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.SkillSource;
+import java.util.HashMap;
 import java.util.HashSet;
-import org.spout.api.util.config.ConfigurationNode;
 
 /**
  *
@@ -15,5 +15,5 @@ public abstract class TargetSource extends SkillSource {
         super(SourceType.TARGET);
     }
     
-    public abstract HashSet<Object> getTargets(Proxis plugin, HashSet<String> types, ConfigurationNode node);
+    public abstract HashSet<Object> getTargets(Proxis plugin, HashSet<String> types, HashMap<String, Object> node);
 }

@@ -1,11 +1,11 @@
 package com.redcastlemedia.multitallented.spout.proxis.controllers;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
-import com.redcastlemedia.multitallented.spout.proxis.models.LanguageConfiguration;
 import com.redcastlemedia.multitallented.spout.proxis.models.ProxisConfiguration;
 import com.redcastlemedia.multitallented.spout.proxis.models.SkillClass;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
+import com.redcastlemedia.multitallented.spout.proxis.models.users.states.LoadingState;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,6 +13,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.logging.Level;
 import org.spout.api.chat.style.ColorChatStyle;
 import org.spout.api.entity.Entity;
@@ -38,7 +39,8 @@ public class UserManager {
         if (users.containsKey(username)) {
             return users.get(username);
         } else {
-            return loadUser(username);
+            loadUser(username);
+            return users.get(username);
         }
     }
     
@@ -257,17 +259,25 @@ public class UserManager {
         }
     }
     
-    private User loadUser(String name) {
-        //TODO make this multi-threaded
-        //TODO add loading state to user until finished
-        User user;
-        if (ProxisConfiguration.USE_DB.getBoolean()) {
-            user = loadDBUser(name);
-        } else {
-            user = loadYMLUser(name);
-        }
+    private void loadUser(final String name) {
+        User user = new User(name);
         users.put(name, user);
-        return user;
+        user.addState(new LoadingState());
+        Runnable thread = new Runnable() {
+            @Override
+            public void run() {
+                if (ProxisConfiguration.USE_DB.getBoolean()) {
+                    User aUser = loadDBUser(name);
+                    users.get(name).removeState("Loading");
+                    users.put(name, aUser);
+                } else {
+                    User aUser = loadYMLUser(name);
+                    users.get(name).removeState("Loading");
+                    users.put(name, aUser);
+                }
+            }
+        };
+        thread.run();
     }
     
     private User loadDBUser(String name) {
@@ -345,7 +355,7 @@ public class UserManager {
                 experience.put(rs.getString("cd.name"), rs.getDouble("cd.amount"));
             }
             //TODO get skills
-            return new User(proxis, name, experience, skills, locale, hp,
+            return new User(name, experience, skills, locale, hp,
                 mana, cooldowns, skillClass, kills, deaths, killStreak,
                 highestKillStreak, favoriteWeapons, favoriteSkills, favoriteVictims,
                 favoriteKillers, points);
@@ -419,7 +429,7 @@ public class UserManager {
             proxis.log(Level.SEVERE, Proxis.NAME + " failed to load " + name + ".yml");
         }
         
-        return new User(proxis, name, experience, skills, locale, hp,
+        return new User(name, experience, skills, locale, hp,
                 mana, cooldowns, skillClass, kills, deaths, killStreak,
                 highestKillStreak, favoriteWeapons, favoriteSkills, favoriteVictims,
                 favoriteKillers, points);

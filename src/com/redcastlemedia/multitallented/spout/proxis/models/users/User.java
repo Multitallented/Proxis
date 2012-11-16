@@ -13,59 +13,106 @@ import org.spout.vanilla.source.DamageCause;
  * @author Multitallented
  */
 public class User {
-    public String locale;
+    public String locale = "en";
     public final String NAME;
-    private final HashSet<UserState> states = new HashSet<>();
-    private final HashMap<String, Double> experience;
-    private final HashMap<String, Skill> skills;
-    private int hp;
-    private int mana;
-    private final HashMap<String, Long> cooldowns;
+    private final HashMap<String, UserState> states = new HashMap<>();
+    private final HashMap<String, Double> experience = new HashMap<>();
+    private final HashMap<String, Skill> skills = new HashMap<>();
+    private int hp = 1;
+    private int mana = 0;
+    private final HashMap<String, Long> cooldowns = new HashMap<>();
     private SkillClass skillClass;
-    private int kills;
-    private int deaths;
-    private int killStreak;
-    private int highestKillStreak;
-    private final HashMap<String, Integer> favoriteWeapons;
-    private final HashMap<String, Integer> favoriteSkills;
-    private final HashMap<String, Integer> favoriteVictim;
-    private final HashMap<String, Integer> favoriteKiller;
-    private int points;
+    private int kills = 0;
+    private int deaths = 0;
+    private int killStreak = 0;
+    private int highestKillStreak = 0;
+    private final HashMap<String, Integer> favoriteWeapons = new HashMap<>();
+    private final HashMap<String, Integer> favoriteSkills = new HashMap<>();
+    private final HashMap<String, Integer> favoriteVictim = new HashMap<>();
+    private final HashMap<String, Integer> favoriteKiller = new HashMap<>();
+    private int points = 0;
     private String lastSkillUsed = "";
     private long timeLastSkillUsed = 0L;
     private String lastDamager = "";
     private long lastDamageTime = 0L;
     private long lastDeath = 0L;
     private DamageCause lastDamageCause = DamageCause.UNKNOWN;
+    private boolean loaded = false;
 
+    public User(String name) {
+        loaded = false;
+        NAME = name;
+    }
     
-    public User(Proxis plugin, String name, HashMap<String, Double> experience,
+    public User(String name, HashMap<String, Double> experience,
             HashMap<String, Skill> skills, String locale, int hp, int mana, HashMap<String, Long> cooldowns,
             SkillClass skillClass, int kills, int deaths, int killStreak, int highestKillStreak,
             HashMap<String, Integer> favoriteWeapons, HashMap<String, Integer> favoriteSkills,
             HashMap<String, Integer> favoriteVictim, HashMap<String, Integer> favoriteKiller,
             int points) {
+        loaded = true;
         NAME = name;
-        this.experience = experience;
-        this.skills = skills;
+        this.experience.putAll(experience);
+        this.skills.putAll(skills);
         this.locale = locale;
         this.hp = hp;
         this.mana = mana;
-        this.cooldowns = cooldowns;
+        this.cooldowns.putAll(cooldowns);
         this.skillClass = skillClass;
         this.kills = kills;
         this.deaths = deaths;
         this.killStreak = killStreak;
         this.highestKillStreak = highestKillStreak;
-        this.favoriteWeapons = favoriteWeapons;
-        this.favoriteSkills = favoriteSkills;
-        this.favoriteVictim = favoriteVictim;
-        this.favoriteKiller = favoriteKiller;
+        this.favoriteWeapons.putAll(favoriteWeapons);
+        this.favoriteSkills.putAll(favoriteSkills);
+        this.favoriteVictim.putAll(favoriteVictim);
+        this.favoriteKiller.putAll(favoriteKiller);
         this.points = points;
         //TODO finish this
     }
+    public void load(HashMap<String, Double> experience,
+            HashMap<String, Skill> skills, String locale, int hp, int mana, HashMap<String, Long> cooldowns,
+            SkillClass skillClass, int kills, int deaths, int killStreak, int highestKillStreak,
+            HashMap<String, Integer> favoriteWeapons, HashMap<String, Integer> favoriteSkills,
+            HashMap<String, Integer> favoriteVictim, HashMap<String, Integer> favoriteKiller,
+            int points) {
+        this.experience.putAll(experience);
+        this.skills.putAll(skills);
+        this.locale = locale;
+        this.hp = hp;
+        this.mana = mana;
+        this.cooldowns.putAll(cooldowns);
+        this.skillClass = skillClass;
+        this.kills = kills;
+        this.deaths = deaths;
+        this.killStreak = killStreak;
+        this.highestKillStreak = highestKillStreak;
+        this.favoriteWeapons.putAll(favoriteWeapons);
+        this.favoriteSkills.putAll(favoriteSkills);
+        this.favoriteVictim.putAll(favoriteVictim);
+        this.favoriteKiller.putAll(favoriteKiller);
+        this.points = points;
+        loaded = true;
+    }
     
-    public HashSet<UserState> getStates() {
+    public void addState(UserState us) {
+        us.apply(this);
+        states.put(us.NAME, us);
+    }
+    
+    public boolean removeState(String stateName) {
+        if (states.containsKey(stateName)) {
+            states.remove(stateName);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    public boolean isLoaded() {
+        return loaded;
+    }
+    public HashMap<String, UserState> getStates() {
         return states;
     }
     

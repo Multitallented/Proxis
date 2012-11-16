@@ -48,7 +48,7 @@ public class Skill {
 
                         @Override
                         public SkillResult testCondition(Proxis plugin, CastSkill cs, User user, HashMap<String, Object> node) {
-                            for (UserState us : user.getStates()) {
+                            for (UserState us : user.getStates().values()) {
                                 if (us.getDefaultStates().contains(BuiltInUserStates.NO_INCOMING_SKILLS) ||
                                         us.getDefaultStates().contains(BuiltInUserStates.NO_SKILLS)) {
                                     us.sendCancelledMessage(((User) cs.getTargetMap().get("self").iterator().next()).NAME, UserState.CancelledMessageTypes.SKILL);

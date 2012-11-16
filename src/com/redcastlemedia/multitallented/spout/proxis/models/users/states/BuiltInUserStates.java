@@ -6,7 +6,7 @@ package com.redcastlemedia.multitallented.spout.proxis.models.users.states;
  */
 public enum BuiltInUserStates {
     NO_OUTGOING_SKILLS,
-    NO_INCOMING_SKILLS, //TODO fix this
+    NO_INCOMING_SKILLS,
     NO_SKILLS,
     MUTE,
     NO_COMMANDS,

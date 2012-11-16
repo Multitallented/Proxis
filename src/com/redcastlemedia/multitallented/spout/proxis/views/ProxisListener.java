@@ -45,7 +45,7 @@ public class ProxisListener implements Listener {
             return;
         }
         User user = proxis.getUserManager().getUser(event.getCommandSource().getName());
-        for (UserState us : user.getStates()) {
+        for (UserState us : user.getStates().values()) {
             if (us.getDefaultStates().contains(BuiltInUserStates.NO_COMMANDS)) {
                 us.sendCancelledMessage(user.NAME, CancelledMessageTypes.COMMAND);
                 event.setCancelled(true);
@@ -57,7 +57,7 @@ public class ProxisListener implements Listener {
     @EventHandler(order = Order.DEFAULT_IGNORE_CANCELLED)
     public void onPlayerChat(PlayerChatEvent event) {
         User user = proxis.getUserManager().getUser(event.getPlayer().getName());
-        for (UserState us : user.getStates()) {
+        for (UserState us : user.getStates().values()) {
             if (us.getDefaultStates().contains(BuiltInUserStates.MUTE)) {
                 us.sendCancelledMessage(user.NAME, CancelledMessageTypes.CHAT);
                 event.setCancelled(true);
@@ -86,7 +86,7 @@ public class ProxisListener implements Listener {
             user = proxis.getUserManager().getUser(((Player) event.getEntity()).getName());
         }
         if (user != null) {
-            for (UserState us : user.getStates()) {
+            for (UserState us : user.getStates().values()) {
                 if (us.getDefaultStates().contains(BuiltInUserStates.NO_DAMAGE) ||
                         us.getDefaultStates().contains(BuiltInUserStates.NO_INCOMING_DAMAGE) ||
                         (dUser != null && (us.getDefaultStates().contains(BuiltInUserStates.NO_PVP) ||
@@ -102,7 +102,7 @@ public class ProxisListener implements Listener {
             }
         }
         if (dUser != null) {
-            for (UserState us : dUser.getStates()) {
+            for (UserState us : dUser.getStates().values()) {
                 if (us.getDefaultStates().contains(BuiltInUserStates.NO_OUTGOING_DAMAGE) ||
                         us.getDefaultStates().contains(BuiltInUserStates.NO_DAMAGE) ||
                         (user != null && (us.getDefaultStates().contains(BuiltInUserStates.NO_OUTGOING_PVP) ||
@@ -124,7 +124,7 @@ public class ProxisListener implements Listener {
             return;
         }
         User user = proxis.getUserManager().getUser(((Player) event.getEntity()).getName());
-        for (UserState us : user.getStates()) {
+        for (UserState us : user.getStates().values()) {
             if (us.getDefaultStates().contains(BuiltInUserStates.NO_HEAL)) {
                 us.sendCancelledMessage(user.NAME, CancelledMessageTypes.HEAL);
                 event.setCancelled(true);
@@ -137,7 +137,7 @@ public class ProxisListener implements Listener {
     @EventHandler(order = Order.DEFAULT_IGNORE_CANCELLED)
     public void onUserManaChangeEvent(UserManaChangeEvent event) {
         User user = proxis.getUserManager().getUser(event.getUsername());
-        for (UserState us : user.getStates()) {
+        for (UserState us : user.getStates().values()) {
             if (us.getDefaultStates().contains(BuiltInUserStates.MANA_FREEZE)) {
                 us.sendCancelledMessage(user.NAME, CancelledMessageTypes.MANA);
                 event.setCancelled(true);
@@ -148,7 +148,7 @@ public class ProxisListener implements Listener {
     @EventHandler
     public void onSkillPreCastEvent(SkillPreCastEvent event) {
         User user = proxis.getUserManager().getUser(event.getUsername());
-        for (UserState us : user.getStates()) {
+        for (UserState us : user.getStates().values()) {
             if (us.getDefaultStates().contains(BuiltInUserStates.NO_SKILLS) ||
                     us.getDefaultStates().contains(BuiltInUserStates.NO_OUTGOING_SKILLS)) {
                 us.sendCancelledMessage(user.NAME, CancelledMessageTypes.SKILL);
