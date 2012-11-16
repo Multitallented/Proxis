@@ -59,11 +59,57 @@ public abstract class UserState extends EffectSource {
             getCurrentTasks().add(idPeriod);
         }
     }
-    public void apply(Block block) {
-        
+    public void apply(final Block block) {
+        for (final UserState u : getInternalStates()) {
+            u.apply(block);
+        }
+        if (duration > 0) {
+            int idDuration = Spout.getScheduler().scheduleSyncDelayedTask(getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    remove(block);
+                    for (int i : getCurrentTasks()) {
+                        Spout.getScheduler().cancelTask(i);
+                    }
+                }
+            }, getDuration(), TaskPriority.NORMAL);
+            getCurrentTasks().add(idDuration);
+        }
+        if (period > 0) {
+            int idPeriod = Spout.getScheduler().scheduleSyncRepeatingTask(getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    tick(block);
+                }
+            }, period, period, TaskPriority.NORMAL);
+            getCurrentTasks().add(idPeriod);
+        }
     }
-    public void apply(Entity e) {
-        
+    public void apply(final Entity e) {
+        for (final UserState u : getInternalStates()) {
+            u.apply(e);
+        }
+        if (duration > 0) {
+            int idDuration = Spout.getScheduler().scheduleSyncDelayedTask(getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    remove(e);
+                    for (int i : getCurrentTasks()) {
+                        Spout.getScheduler().cancelTask(i);
+                    }
+                }
+            }, getDuration(), TaskPriority.NORMAL);
+            getCurrentTasks().add(idDuration);
+        }
+        if (period > 0) {
+            int idPeriod = Spout.getScheduler().scheduleSyncRepeatingTask(getPlugin(), new Runnable() {
+                @Override
+                public void run() {
+                    tick(e);
+                }
+            }, period, period, TaskPriority.NORMAL);
+            getCurrentTasks().add(idPeriod);
+        }
     }
     
     public void tick(User user) {
@@ -85,29 +131,33 @@ public abstract class UserState extends EffectSource {
         }
     }
     public void remove(Block block) {
-        
+        for (int i : getCurrentTasks()) {
+            Spout.getScheduler().cancelTask(i);
+        }
+        for (UserState us : getInternalStates()) {
+            us.remove(block);
+        }
     }
     public void remove(Entity e) {
-        
+        for (int i : getCurrentTasks()) {
+            Spout.getScheduler().cancelTask(i);
+        }
+        for (UserState us : getInternalStates()) {
+            us.remove(e);
+        }
     }
     
     @Override
     public void execute(Proxis plugin, Skill.CastSkill cs, User target, HashMap<String, Object> node) {
         apply(target);
-        //TODO add to scheduler
     }
-    
-    
     @Override
     public void execute(Proxis plugin, Skill.CastSkill cs, Entity target, HashMap<String, Object> node) {
         apply(target);
-        //TODO add to scheduler
     }
-
     @Override
     public void execute(Proxis plugin, Skill.CastSkill cs, Block target, HashMap<String, Object> node) {
         apply(target);
-        //TODO add to scheduler
     }
     
     public abstract void sendCancelledMessage(String username, CancelledMessageTypes type);

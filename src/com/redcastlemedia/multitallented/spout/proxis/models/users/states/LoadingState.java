@@ -16,7 +16,7 @@ import org.spout.api.geo.cuboid.Block;
  */
 public class LoadingState extends UserState {
     public LoadingState() {
-        super("Loading", -1, 100);
+        super("Loading", -1, -1);
     }
     
     @Override
@@ -39,19 +39,9 @@ public class LoadingState extends UserState {
     }
 
     @Override
-    public void apply(User user) {
-        //TODO teleport? blind?
-    }
-
-    @Override
-    public void tick(User user) {
-        
-    }
-
-    @Override
     public HashSet<UserState> getInternalStates() {
         HashSet<UserState> tempSet = new HashSet<>();
-        //TODO add root
+        tempSet.add(new RootState(-1, 100));
         //TODO add blind
         //TODO add invis
         return tempSet;
