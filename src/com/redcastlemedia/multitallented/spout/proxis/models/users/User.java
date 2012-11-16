@@ -95,14 +95,43 @@ public class User {
         loaded = true;
     }
     
+    /**
+     * Calls the apply method of the user state and
+     * adds the state to the user
+     * @param us the state to be added
+     */
     public void addState(UserState us) {
         us.apply(this);
         states.put(us.NAME, us);
     }
     
+    /**
+     * Calls the remove method for the user state and
+     * removes the state from the user
+     * @param stateName
+     * @return whether the user had that state
+     */
     public boolean removeState(String stateName) {
         if (states.containsKey(stateName)) {
+            UserState us = states.get(stateName);
+            us.remove(this);
             states.remove(stateName);
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    /**
+     * Calls the remove method for the user state and
+     * removes the state from the user
+     * @param us
+     * @return whether the user had that state
+     */
+    public boolean removeState(UserState us) {
+        if (states.containsKey(us.NAME)) {
+            us.remove(this);
+            states.remove(us.NAME);
             return true;
         } else {
             return false;

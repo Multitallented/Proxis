@@ -42,8 +42,8 @@ public class LoadingState extends UserState {
     public HashSet<UserState> getInternalStates() {
         HashSet<UserState> tempSet = new HashSet<>();
         tempSet.add(new RootState(-1, 100));
-        //TODO add blind
-        //TODO add invis
+        tempSet.add(new InvisState(-1));
+        tempSet.add(new BlindState(-1));
         return tempSet;
     }
 }

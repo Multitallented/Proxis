@@ -13,14 +13,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.logging.Level;
 import org.spout.api.chat.style.ColorChatStyle;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.scheduler.TaskPriority;
 import org.spout.api.util.config.yaml.YamlConfiguration;
-import org.spout.vanilla.component.living.Human;
+import org.spout.vanilla.component.inventory.PlayerInventory;
 import org.spout.vanilla.source.DamageCause;
 
 
@@ -90,7 +89,7 @@ public class UserManager {
             econBonus += psm.getEconBase();
         }
          */
-        dUser.addFavoriteWeapon(player.get(Human.class).getInventory().getQuickbar().getCurrentItem().getMaterial().getDisplayName());
+        dUser.addFavoriteWeapon(player.get(PlayerInventory.class).getQuickbar().getCurrentItem().getMaterial().getDisplayName());
         dUser.addFavoriteVictim(user.NAME);
         user.addFavoriteKiller(dUser.NAME);
         
@@ -149,6 +148,8 @@ public class UserManager {
         }
         
         points += healthBonus;
+        user.setPoints(user.getPoints() + points);
+        dUser.setPoints(dUser.getPoints() + ProxisConfiguration.POINTS_PER_DEATH.getInt());
         
         //TODO level difference points
         /*double pointLevelBonus = 0;
@@ -266,15 +267,14 @@ public class UserManager {
         Runnable thread = new Runnable() {
             @Override
             public void run() {
+                User aUser;
                 if (ProxisConfiguration.USE_DB.getBoolean()) {
-                    User aUser = loadDBUser(name);
-                    users.get(name).removeState("Loading");
-                    users.put(name, aUser);
+                    aUser = loadDBUser(name);
                 } else {
-                    User aUser = loadYMLUser(name);
-                    users.get(name).removeState("Loading");
-                    users.put(name, aUser);
+                    aUser = loadYMLUser(name);
                 }
+                users.get(name).removeState("Loading");
+                users.put(name, aUser);
             }
         };
         thread.run();
