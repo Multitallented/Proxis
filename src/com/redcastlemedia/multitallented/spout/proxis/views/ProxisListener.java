@@ -9,13 +9,16 @@ import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.BuiltInUserStates;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState.CancelledMessageTypes;
+import org.spout.api.Spout;
 import org.spout.api.entity.Player;
 import org.spout.api.event.EventHandler;
 import org.spout.api.event.Listener;
 import org.spout.api.event.Order;
 import org.spout.api.event.player.PlayerChatEvent;
 import org.spout.api.event.player.PlayerJoinEvent;
+import org.spout.api.event.player.PlayerLeaveEvent;
 import org.spout.api.event.server.PreCommandEvent;
+import org.spout.vanilla.component.misc.HealthComponent;
 import org.spout.vanilla.event.entity.EntityDamageEvent;
 import org.spout.vanilla.event.player.PlayerDeathEvent;
 import org.spout.vanilla.protocol.handler.player.EntityHealthChangeEvent;
@@ -36,8 +39,12 @@ public class ProxisListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        //Load the user
+        //Loads the user
         proxis.getUserManager().getUser(event.getPlayer().getName());
+    }
+    @EventHandler
+    public void onPlayerQuit(PlayerLeaveEvent event) {
+        proxis.getUserManager().saveUser(event.getPlayer().getName());
     }
     @EventHandler(order = Order.DEFAULT_IGNORE_CANCELLED)
     public void onPlayerCommand(PreCommandEvent event) {
@@ -119,18 +126,42 @@ public class ProxisListener implements Listener {
     }
     
     @EventHandler(order = Order.DEFAULT_IGNORE_CANCELLED)
-    public void onHeal(EntityHealthChangeEvent event) {
-        if (event.getChange() < 1 || !event.getEntity().getClass().equals(Player.class)) {
-            return;
-        }
-        User user = proxis.getUserManager().getUser(((Player) event.getEntity()).getName());
-        for (UserState us : user.getStates().values()) {
-            if (us.getDefaultStates().contains(BuiltInUserStates.NO_HEAL)) {
-                us.sendCancelledMessage(user.NAME, CancelledMessageTypes.HEAL);
-                event.setCancelled(true);
+    public void onHealthChange(EntityHealthChangeEvent event) {
+        if (event.getEntity().getClass().equals(Player.class)) {
+            User user = proxis.getUserManager().getUser(((Player) event.getEntity()).getName());
+            if (event.getChange() > 1) {
+                for (UserState us : user.getStates().values()) {
+                    if (us.getDefaultStates().contains(BuiltInUserStates.NO_HEAL)) {
+                        us.sendCancelledMessage(user.NAME, CancelledMessageTypes.HEAL);
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+            int newHP = user.getHP() + event.getChange();
+            Player player = Spout.getEngine().getPlayer(user.NAME, true);
+            if (player == null) {
                 return;
             }
+            HealthComponent hc = player.get(HealthComponent.class);
+            if (newHP > 0 && newHP <= user.getSkillClass().MAX_HP) {
+                int oldHealth = user.getHP() / user.getSkillClass().MAX_HP;
+                user.setHP(user.getHP() + event.getChange());
+                int newHealth = user.getHP() / user.getSkillClass().MAX_HP;
+                int newChange = (int) (((double) newHealth - oldHealth) / ((double) user.getSkillClass().MAX_HP) * hc.getMaxHealth());
+                newChange = hc.getHealth() + newChange < 0 ? (hc.getHealth() - 1) * -1 : newChange;
+                event.setChange(newChange);
+                //TODO use hc.setMaxHealth() instead
+            } else if (newHP < 0) {
+                user.setHP(0);
+                event.setChange(hc.getHealth() * -1);
+            } else {
+                user.setHP(user.getSkillClass().MAX_HP);
+                event.setChange(hc.getMaxHealth() - hc.getHealth());
+            }
         }
+        
+        //TODO damage manager
     }
     
     ////////////PROXIS EVENTS/////////////////

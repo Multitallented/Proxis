@@ -30,17 +30,16 @@ import org.spout.vanilla.source.DamageCause;
 public class UserManager {
     private final Proxis proxis;
     private final HashMap<String, User> users = new HashMap<>();
+    
     public UserManager(Proxis proxis) {
         this.proxis = proxis;
     }
 
     public User getUser(String username) {
-        if (users.containsKey(username)) {
-            return users.get(username);
-        } else {
+        if (!users.containsKey(username)) {
             loadUser(username);
-            return users.get(username);
         }
+        return users.get(username);
     }
     
     public void handlePlayerDeath(String name) {
@@ -140,9 +139,9 @@ public class UserManager {
         
         int healthBonus = 0;
         
-        if (user.getHP() / user.getSkillClass().maxHP < 0.25) {
+        if (user.getHP() / user.getSkillClass().MAX_HP < 0.25) {
             healthBonus = ProxisConfiguration.POINTS_FOR_QUARTER_HP.getInt();
-        } else if (user.getHP() / user.getSkillClass().maxHP < 0.5) {
+        } else if (user.getHP() / user.getSkillClass().MAX_HP < 0.5) {
             healthBonus = ProxisConfiguration.POINTS_FOR_HALF_HP.getInt();
             
         }
@@ -402,7 +401,7 @@ public class UserManager {
             deaths = config.getNode("deaths").getInt();
             killStreak = config.getNode("killstreak").getInt();
             points = config.getNode("points").getInt();
-            highestKillStreak = config.getNode("highestkillstreak").getInt();
+            highestKillStreak = config.getNode("highest-killstreak").getInt();
             for (String s : config.getChild("favorite-victims").getKeys(false)) {
                 favoriteVictims.put(s, config.getNode("favorite-victims." + s).getInt());
             }
@@ -433,6 +432,72 @@ public class UserManager {
                 mana, cooldowns, skillClass, kills, deaths, killStreak,
                 highestKillStreak, favoriteWeapons, favoriteSkills, favoriteVictims,
                 favoriteKillers, points);
+    }
+    
+    public void saveUser(final String name) {
+        if (!users.containsKey(name) || !users.get(name).isLoaded()) {
+            return;
+        }
+        Runnable thread = new Runnable() {
+            @Override
+            public void run() {
+                User user = users.get(name);
+                if (ProxisConfiguration.USE_DB.getBoolean()) {
+                    saveDBUser(user);
+                } else {
+                    saveYMLUser(user);
+                }
+            }
+        };
+        thread.run();
+    }
+    
+    private void saveDBUser(User user) {
+        //TODO save DB User
+    }
+    
+    private void saveYMLUser(User user) {
+        File userFolder = new File(proxis.getDataFolder(), "users");
+        userFolder.mkdir();
+        File userFile = new File(userFolder, user.NAME + ".yml");
+        YamlConfiguration config;
+        try {
+            if (!userFile.exists()) {
+                    userFile.createNewFile();
+            }
+            config = new YamlConfiguration(userFile);
+            config.load();
+            config.getNode("locale").setValue(user.getLocale());
+            config.getNode("hp").setValue(user.getHP());
+            config.getNode("mana").setValue(user.getMana());
+            config.getNode("class").setValue(user.getSkillClass().NAME);
+            config.getNode("kills").setValue(user.getKills());
+            config.getNode("deaths").setValue(user.getDeaths());
+            config.getNode("killstreak").setValue(user.getKillStreak());
+            config.getNode("points").setValue(user.getPoints());
+            config.getNode("highest-killstreak").setValue(user.getHighestKillStreak());
+            for (String s : user.getFavoriteVictims().keySet()) {
+                config.getNode("favorite-victims." + s).setValue(user.getFavoriteVictims().get(s));
+            }
+            for (String s : user.getFavoriteKillers().keySet()) {
+                config.getNode("favorite-killers." + s).setValue(user.getFavoriteKillers().get(s));
+            }
+            for (String s : user.getFavoriteSkills().keySet()) {
+                config.getNode("favorite-skills." + s).setValue(user.getFavoriteSkills().get(s));
+            }
+            for (String s : user.getFavoriteWeapons().keySet()) {
+                config.getNode("favorite-weapons." + s).setValue(user.getFavoriteWeapons().get(s));
+            }
+            for (String s : user.getCooldowns().keySet()) {
+                config.getNode("cooldowns." + s).setValue(user.getCooldown(s));
+            }
+            for (String s : user.getExperienceMap().keySet()) {
+                config.getNode("experience." + s).setValue(user.getExperienceMap().get(s));
+            }
+            //TODO finish saving the YML user skills
+        } catch (Exception e) {
+            proxis.log(Level.SEVERE, Proxis.NAME + " failed to save " + user.NAME + ".yml");
+        }
     }
 
 }

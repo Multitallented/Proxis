@@ -1,11 +1,9 @@
 package com.redcastlemedia.multitallented.spout.proxis.models.users;
 
-import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.models.SkillClass;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState;
 import java.util.HashMap;
-import java.util.HashSet;
 import org.spout.vanilla.source.DamageCause;
 
 /**
@@ -188,6 +186,9 @@ public class User {
             favoriteWeapons.put(name, 1);
         }
     }
+    public HashMap<String, Integer> getFavoriteWeapons() {
+        return favoriteWeapons;
+    }
     public String getFavoriteWeapon() {
         String bestWeapon = "None: 0";
         int high = 0;
@@ -204,6 +205,9 @@ public class User {
         } else {
             favoriteSkills.put(name, 1);
         }
+    }
+    public HashMap<String, Integer> getFavoriteSkills() {
+        return favoriteSkills;
     }
     public String getFavoriteSkill() {
         String bestSkill = "None: 0";
@@ -222,6 +226,9 @@ public class User {
             favoriteVictim.put(name, 1);
         }
     }
+    public HashMap<String, Integer> getFavoriteVictims() {
+        return favoriteVictim;
+    }
     public String getFavoriteVictim() {
         String bestSkill = "None: 0";
         int high = 0;
@@ -239,6 +246,9 @@ public class User {
             favoriteKiller.put(name, 1);
         }
     }
+    public HashMap<String, Integer> getFavoriteKillers() {
+        return favoriteKiller;
+    }
     public String getFavoriteKiller() {
         String bestSkill = "None: 0";
         int high = 0;
@@ -248,6 +258,21 @@ public class User {
             }
         }
         return bestSkill;
+    }
+    public Long getCooldown(String name) {
+        if (!cooldowns.containsKey(name)) {
+            return 0L;
+        }
+        return cooldowns.get(name);
+    }
+    public HashMap<String, Long> getCooldowns() {
+        return cooldowns;
+    }
+    public void setCooldown(String name, Long time) {
+        cooldowns.put(name, time);
+    }
+    public HashMap<String, Double> getExperienceMap() {
+        return experience;
     }
     public long getLastDeath() {
         return lastDeath;

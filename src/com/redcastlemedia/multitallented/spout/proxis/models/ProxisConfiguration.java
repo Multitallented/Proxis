@@ -31,10 +31,9 @@ public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     public static final ConfigurationHolder POINTS_FOR_HALF_HP = new ConfigurationHolder(2, "kill.points-for-half-hp");
     //</editor-fold>
     
-
-    
     public ProxisConfiguration(File dataFolder) {
         super(new YamlConfiguration(new File(dataFolder, "config.yml")));
+        //TODO setup default config for mob damage and hp
     }
     
     @Override
