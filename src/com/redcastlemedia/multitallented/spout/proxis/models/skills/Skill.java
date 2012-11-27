@@ -14,6 +14,7 @@ import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserSt
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.logging.Level;
 import org.spout.api.Spout;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
@@ -71,11 +72,24 @@ public class Skill {
         }
     }
     
+    /**
+     * Begins by populating the target map by recursively
+     * resolving end-points and origin points. Then it
+     * calls SkillPreCastEvent. Then it checks instancedPreCastConditions
+     * before doing instancedPreCastEffects. Unless a pre-cast condition
+     * fails, it will check instancedPostCastConditions and effects.
+     * @param user the caster of the skill
+     */
     public void useSkill(User user) {
         Player caster = Spout.getEngine().getPlayer(user.NAME, true);
         if (caster == null) {
             return;
         }
+        
+        //This will populate the target map by recursively
+        //acquiring targets and end-points beginning with origin
+        //self. If there is an origin that does not match the
+        //name of a target scheme, then the skill will fail
         HashMap<String, HashSet<Object>> targetMap = new HashMap<>();
         HashSet<Target> targetsClone = (HashSet<Target>) targets.clone();
         HashMap<Target, Point> processedTargets = new HashMap<>();
@@ -113,6 +127,8 @@ public class Skill {
                 targetsClone.remove(tar);
             }
             if (removeLater.isEmpty() && !targetsClone.isEmpty()) {
+                plugin.log(Level.SEVERE, Proxis.NAME + "failed to cast" + NAME + " for " + caster.getName());
+                plugin.log(Level.SEVERE, Proxis.NAME + "improper target origin configuration.");
                 return;
             }
         } while (!targetsClone.isEmpty());
