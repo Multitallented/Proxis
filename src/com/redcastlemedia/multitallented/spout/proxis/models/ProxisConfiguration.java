@@ -12,6 +12,8 @@ import org.spout.api.util.config.yaml.YamlConfiguration;
  */
 public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     public static final ConfigurationHolder LOCALE = new ConfigurationHolder("en", "default-locale");
+    public static final ConfigurationHolder MOB_HEALTH = new ConfigurationHolder("mob.health");
+    public static final ConfigurationHolder MOB_DAMAGE = new ConfigurationHolder("mob.damage");
     //<editor-fold defaultstate="collapsed" desc="database">
     public static final ConfigurationHolder USE_DB = new ConfigurationHolder(false, "database.use-database");
     public static final ConfigurationHolder DATABASE_ADDRESS = new ConfigurationHolder("192.168.1.10", "database.database-address");
@@ -33,7 +35,13 @@ public class ProxisConfiguration extends ConfigurationHolderConfiguration {
     
     public ProxisConfiguration(File dataFolder) {
         super(new YamlConfiguration(new File(dataFolder, "config.yml")));
-        //TODO setup default config for mob damage and hp
+        //Set default values for these
+        getNode("mob.health.zombie").setValue(20);
+        getNode("mob.health.skeleton").setValue(15);
+        getNode("mob.health.cave_spider").setValue(12);
+        getNode("mob.damage.zombie").setValue(3);
+        getNode("mob.damage.skeleton").setValue(2);
+        getNode("mob.damage.cave_spider").setValue(4);
     }
     
     @Override

@@ -14,13 +14,16 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.HashMap;
 import java.util.logging.Level;
+import org.spout.api.Spout;
 import org.spout.api.chat.style.ColorChatStyle;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.scheduler.TaskPriority;
 import org.spout.api.util.config.yaml.YamlConfiguration;
 import org.spout.vanilla.component.inventory.PlayerInventory;
+import org.spout.vanilla.component.misc.HealthComponent;
 import org.spout.vanilla.source.DamageCause;
+import org.spout.vanilla.source.HealthChangeCause;
 
 
 /**
@@ -272,8 +275,16 @@ public class UserManager {
                 } else {
                     aUser = loadYMLUser(name);
                 }
+                
                 users.get(name).removeState("Loading");
                 users.put(name, aUser);
+                Player player = Spout.getEngine().getPlayer(aUser.NAME, true);
+                if (player == null) {
+                    return;
+                }
+                player.get(HealthComponent.class).setMaxHealth(aUser.getSkillClass().MAX_HP);
+                player.get(HealthComponent.class).setSpawnHealth(aUser.getSkillClass().MAX_HP);
+                player.get(HealthComponent.class).setHealth(aUser.getHP(), HealthChangeCause.COMMAND);
             }
         };
         thread.run();

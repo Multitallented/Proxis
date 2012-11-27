@@ -6,23 +6,29 @@ import com.redcastlemedia.multitallented.spout.proxis.api.events.SkillPreCastEve
 import com.redcastlemedia.multitallented.spout.proxis.api.events.UserGainExpEvent;
 import com.redcastlemedia.multitallented.spout.proxis.api.events.UserManaChangeEvent;
 import com.redcastlemedia.multitallented.spout.proxis.api.events.UserManaChangeEvent.ManaChangeReason;
+import com.redcastlemedia.multitallented.spout.proxis.models.ProxisConfiguration;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.BuiltInUserStates;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState.CancelledMessageTypes;
-import org.spout.api.Spout;
+import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.event.EventHandler;
 import org.spout.api.event.Listener;
 import org.spout.api.event.Order;
+import org.spout.api.event.entity.EntitySpawnEvent;
 import org.spout.api.event.player.PlayerChatEvent;
 import org.spout.api.event.player.PlayerJoinEvent;
 import org.spout.api.event.player.PlayerLeaveEvent;
 import org.spout.api.event.server.PreCommandEvent;
+import org.spout.vanilla.component.living.Living;
 import org.spout.vanilla.component.misc.HealthComponent;
 import org.spout.vanilla.event.entity.EntityDamageEvent;
 import org.spout.vanilla.event.player.PlayerDeathEvent;
+import org.spout.vanilla.material.VanillaMaterial;
+import org.spout.vanilla.protocol.entity.creature.CreatureType;
 import org.spout.vanilla.protocol.handler.player.EntityHealthChangeEvent;
+import org.spout.vanilla.source.HealthChangeCause;
 
 /**
  *
@@ -37,15 +43,31 @@ public class ProxisListener implements Listener {
     public ProxisListener(Proxis proxis) {
         this.proxis = proxis;
     }
-
+    
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        //Loads the user
+        //Loads the user and sets his hp and loading state
         proxis.getUserManager().getUser(event.getPlayer().getName());
     }
     @EventHandler
     public void onPlayerQuit(PlayerLeaveEvent event) {
         proxis.getUserManager().saveUser(event.getPlayer().getName());
+    }
+    @EventHandler
+    public void onEntitySpawn(EntitySpawnEvent event) {
+        Entity e = event.getEntity();
+        if (!e.has(Living.class) || !e.has(HealthComponent.class) && !(e instanceof Player)) {
+            return;
+        }
+        Living liv = e.get(Living.class);
+        String creatureTypeName = CreatureType.byClass(liv.getClass()).name().toLowerCase();
+        int health = ProxisConfiguration.MOB_HEALTH.getChild(creatureTypeName).getInt(0);
+        if (health != 0) {
+            e.get(HealthComponent.class).setSpawnHealth(health);
+            e.get(HealthComponent.class).setMaxHealth(health);
+            e.get(HealthComponent.class).setHealth(health, HealthChangeCause.COMMAND);
+        }
+        //TODO damage? probably going to have to check the damage events instead
     }
     @EventHandler(order = Order.DEFAULT_IGNORE_CANCELLED)
     public void onPlayerCommand(PreCommandEvent event) {
@@ -128,6 +150,7 @@ public class ProxisListener implements Listener {
     
     @EventHandler(order = Order.DEFAULT_IGNORE_CANCELLED)
     public void onHealthChange(EntityHealthChangeEvent event) {
+        //TODO test this to see if this works
         if (event.getEntity().getClass().equals(Player.class)) {
             User user = proxis.getUserManager().getUser(((Player) event.getEntity()).getName());
             if (event.getChange() > 1) {
@@ -139,7 +162,7 @@ public class ProxisListener implements Listener {
                     }
                 }
             }
-            int newHP = user.getHP() + event.getChange();
+            /*int newHP = user.getHP() + event.getChange();
             Player player = Spout.getEngine().getPlayer(user.NAME, true);
             if (player == null) {
                 return;
@@ -159,7 +182,7 @@ public class ProxisListener implements Listener {
             } else {
                 user.setHP(user.getSkillClass().MAX_HP);
                 event.setChange(hc.getMaxHealth() - hc.getHealth());
-            }
+            }*/
         }
         
         //TODO damage manager
