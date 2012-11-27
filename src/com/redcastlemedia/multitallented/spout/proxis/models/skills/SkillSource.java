@@ -2,6 +2,7 @@ package com.redcastlemedia.multitallented.spout.proxis.models.skills;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.models.SourceType;
+import java.util.HashMap;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.vanilla.event.entity.EntityDamageEvent;
@@ -32,6 +33,10 @@ public abstract class SkillSource {
         return name;
     }
 
+    public HashMap<String, Object> getDefaultNode() {
+        HashMap<String, Object> tempMap = new HashMap<>();
+        return tempMap;
+    }
     
     public boolean damageCheck(Player damager, Entity damagee) {
         return plugin.getEngine().getEventManager().callEvent(new EntityDamageEvent(damagee, 0, DamageCause.UNKNOWN, false, (Entity) damager)).isCancelled();

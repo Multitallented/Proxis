@@ -5,6 +5,7 @@ import com.redcastlemedia.multitallented.spout.proxis.api.events.SkillConditionE
 import com.redcastlemedia.multitallented.spout.proxis.api.events.SkillPreCastEvent;
 import com.redcastlemedia.multitallented.spout.proxis.api.events.UserGainExpEvent;
 import com.redcastlemedia.multitallented.spout.proxis.api.events.UserManaChangeEvent;
+import com.redcastlemedia.multitallented.spout.proxis.api.events.UserManaChangeEvent.ManaChangeReason;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.BuiltInUserStates;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState;
@@ -168,8 +169,14 @@ public class ProxisListener implements Listener {
     @EventHandler(order = Order.DEFAULT_IGNORE_CANCELLED)
     public void onUserManaChangeEvent(UserManaChangeEvent event) {
         User user = proxis.getUserManager().getUser(event.getUsername());
+        boolean natural = event.getReason() == ManaChangeReason.NATURAL_REGEN;
+        boolean increase = event.getManaChange() > 0;
+        boolean decrease = !increase;
         for (UserState us : user.getStates().values()) {
-            if (us.getDefaultStates().contains(BuiltInUserStates.MANA_FREEZE)) {
+            if (us.getDefaultStates().contains(BuiltInUserStates.MANA_FREEZE) ||
+                    (natural && us.getDefaultStates().contains(BuiltInUserStates.MANA_FREEZE_NATURAL)) ||
+                    (increase && us.getDefaultStates().contains(BuiltInUserStates.MANA_FREEZE_GAIN)) ||
+                    (decrease && us.getDefaultStates().contains(BuiltInUserStates.MANA_FREEZE))) {
                 us.sendCancelledMessage(user.NAME, CancelledMessageTypes.MANA);
                 event.setCancelled(true);
                 return;

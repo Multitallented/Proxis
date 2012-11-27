@@ -1,23 +1,24 @@
 package com.redcastlemedia.multitallented.spout.proxis.models.skills;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
+import com.redcastlemedia.multitallented.spout.proxis.api.events.SkillCastEvent;
+import com.redcastlemedia.multitallented.spout.proxis.api.events.SkillPreCastEvent;
 import com.redcastlemedia.multitallented.spout.proxis.models.conditions.Condition;
 import com.redcastlemedia.multitallented.spout.proxis.models.conditions.ConditionSource;
 import com.redcastlemedia.multitallented.spout.proxis.models.effects.Effect;
 import com.redcastlemedia.multitallented.spout.proxis.models.targets.Target;
+import com.redcastlemedia.multitallented.spout.proxis.models.targets.TargetSource.TargetScheme;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.BuiltInUserStates;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.states.UserState;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.spout.api.Spout;
 import org.spout.api.entity.Entity;
+import org.spout.api.entity.Player;
 import org.spout.api.geo.cuboid.Block;
-import org.spout.api.util.config.ConfigurationHolder;
-import org.spout.api.util.config.ConfigurationNode;
-import org.spout.api.util.config.yaml.YamlConfiguration;
+import org.spout.api.geo.discrete.Point;
 
 /**
  *
@@ -57,12 +58,10 @@ public class Skill {
                             }
                             return SkillResult.NORMAL;
                         }
-
                         @Override
                         public SkillResult testCondition(Proxis plugin, CastSkill cs, Block block, HashMap<String, Object> node) {
                             return SkillResult.NORMAL;
                         }
-
                         @Override
                         public SkillResult testCondition(Proxis plugin, CastSkill cs, Entity ve, HashMap<String, Object> node) {
                             return SkillResult.NORMAL;
@@ -72,30 +71,55 @@ public class Skill {
         }
     }
     
-    public void applyState(User user, UserState us) {
-        plugin.getDamageManager().putBuiltInUserStates(user.NAME, us.getDefaultStates());
-        us.apply(user);
-        //TODO apply State for duration + ticks?
-    }
-    
-    public void applyState(Block block, UserState us) {
-        //TODO applyState block
-    }
-    
-    public void applyState(Entity e, UserState us) {
-        //TODO applyState Entity
-    }
-    
     public void useSkill(User user) {
-        HashMap<String, HashSet<Object>> targetMap = new HashMap<>();
-        for (Target tar : targets) {
-            targetMap.put(tar.NAME, tar.getTargets(plugin, user));
+        Player caster = Spout.getEngine().getPlayer(user.NAME, true);
+        if (caster == null) {
+            return;
         }
+        HashMap<String, HashSet<Object>> targetMap = new HashMap<>();
+        HashSet<Target> targetsClone = (HashSet<Target>) targets.clone();
+        HashMap<Target, Point> processedTargets = new HashMap<>();
+        do {
+            HashSet<Target> removeLater = new HashSet<>();
+            for (Target tar : targetsClone) {
+                if (!tar.getNode().containsKey("origin")) {
+                    removeLater.add(tar);
+                }
+                String originName = "self";
+                try {
+                    originName = (String) tar.getNode().get("origin");
+                } catch (Exception e) {
+                    removeLater.add(tar);
+                }
+                if (!originName.equals("self")) {
+                    for (Target targ : processedTargets.keySet()) {
+                        if (!targ.NAME.equals(originName)) {
+                            continue;
+                        }
+                        TargetScheme ts = tar.getTargets(plugin, user, processedTargets.get(targ));
+                        targetMap.put(originName, ts.targets);
+                        removeLater.add(tar);
+                        processedTargets.put(tar, ts.originPoint);
+                        break;
+                    }
+                } else {
+                    TargetScheme ts = tar.getTargets(plugin, user, caster.getTransform().getPosition());
+                    targetMap.put(originName, ts.targets);
+                    removeLater.add(tar);
+                    processedTargets.put(tar, ts.originPoint);
+                }
+            }
+            for (Target tar : removeLater) {
+                targetsClone.remove(tar);
+            }
+            if (removeLater.isEmpty() && !targetsClone.isEmpty()) {
+                return;
+            }
+        } while (!targetsClone.isEmpty());
         HashSet<Object> tempSet = new HashSet<>();
         tempSet.add(user);
         targetMap.put("self", tempSet);
-        
-        CastSkill cs = new CastSkill(this, targetMap);
+        CastSkill cs = new CastSkill(caster, this, targetMap);
         cs.checkConditions();
     }
 
@@ -105,24 +129,42 @@ public class Skill {
         public final HashMap<Integer, HashSet<SkillResult>> pendingConditions = new HashMap<>();
         public final HashMap<Integer, Integer> pendingConditionsSize = new HashMap<>();
         public boolean preCast = true;
+        private Player caster;
+        public final ArrayList<HashMap<Condition, String>> instancedPreCastConditions;
+        public final ArrayList<HashMap<Condition, String>> instancedPostCastConditions;
+        public final ArrayList<HashMap<Effect, String>> instancedPreCastEffects;
+        public final ArrayList<HashMap<Effect, String>> instancedPostCastEffects;
         
-        public CastSkill(Skill skill, HashMap<String, HashSet<Object>> targetMap) {
+        public CastSkill(Player caster, Skill skill, HashMap<String, HashSet<Object>> targetMap) {
             this.targetMap = targetMap;
             this.skill = skill;
+            this.caster = caster;
+            this.instancedPreCastConditions = (ArrayList<HashMap<Condition, String>>) preCastConditions.clone();
+            this.instancedPostCastConditions = (ArrayList<HashMap<Condition, String>>) postCastConditions.clone();
+            this.instancedPreCastEffects = (ArrayList<HashMap<Effect, String>>) preCastEffects.clone();
+            this.instancedPostCastEffects = (ArrayList<HashMap<Effect, String>>) postCastEffects.clone();
         }
         
         public void checkConditions() {
             if (preCast) {
-                for (int i=0; i<preCastConditions.size(); i++) {
-                    HashMap<Condition, String> conditions = preCastConditions.get(i);
+                SkillPreCastEvent sPCEvent = Spout.getEventManager().callEvent(new SkillPreCastEvent(caster.getName(), this));
+                if (sPCEvent.isCancelled()) {
+                    return;
+                }
+                for (int i=0; i<instancedPreCastConditions.size(); i++) {
+                    HashMap<Condition, String> conditions = instancedPreCastConditions.get(i);
                     pendingConditionsSize.put(i, conditions.size());
                     for (Condition con : conditions.keySet()) {
                         con.testCondition(this, targetMap.get(conditions.get(con)));
                     }
                 }
             } else {
-                for (int i=0; i<postCastConditions.size(); i++) {
-                    HashMap<Condition, String> conditions = postCastConditions.get(i);
+                SkillCastEvent sCEvent = Spout.getEventManager().callEvent(new SkillCastEvent(caster.getName(), this));
+                if (sCEvent.isCancelled()) {
+                    return;
+                }
+                for (int i=0; i<instancedPostCastConditions.size(); i++) {
+                    HashMap<Condition, String> conditions = instancedPostCastConditions.get(i);
                     pendingConditionsSize.put(i, conditions.size());
                     for (Condition con : conditions.keySet()) {
                         con.testCondition(this, targetMap.get(conditions.get(con)));
@@ -168,12 +210,12 @@ public class Skill {
         
         private void executeEffects(int index) {
             if (preCast) {
-                for (Effect effect : preCastEffects.get(index).keySet()) {
-                    effect.execute(this, targetMap.get(preCastEffects.get(index).get(effect)));
+                for (Effect effect : instancedPreCastEffects.get(index).keySet()) {
+                    effect.execute(this, targetMap.get(instancedPreCastEffects.get(index).get(effect)));
                 }
             } else {
-                for (Effect effect : postCastEffects.get(index).keySet()) {
-                    effect.execute(this, targetMap.get(postCastEffects.get(index).get(effect)));
+                for (Effect effect : instancedPostCastEffects.get(index).keySet()) {
+                    effect.execute(this, targetMap.get(instancedPostCastEffects.get(index).get(effect)));
                 }
             }
         }
@@ -181,7 +223,9 @@ public class Skill {
         public Skill getSkill() {
             return skill;
         }
-        
+        public Player getCaster() {
+            return caster;
+        }
         public HashMap<String, HashSet<Object>> getTargetMap() {
             return targetMap;
         }

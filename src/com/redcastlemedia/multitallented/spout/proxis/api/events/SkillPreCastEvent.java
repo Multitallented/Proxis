@@ -1,6 +1,6 @@
 package com.redcastlemedia.multitallented.spout.proxis.api.events;
 
-import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill;
+import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill.CastSkill;
 import org.spout.api.event.Cancellable;
 import org.spout.api.event.Event;
 import org.spout.api.event.HandlerList;
@@ -13,8 +13,8 @@ public class SkillPreCastEvent extends Event implements Cancellable {
     private static final HandlerList hList = new HandlerList();
     private String username;
     private boolean cancelled = false;
-    private Skill skill;
-    public SkillPreCastEvent(String username, Skill skill) {
+    private CastSkill skill;
+    public SkillPreCastEvent(String username, CastSkill skill) {
         this.username = username;
         this.skill = skill;
     }
@@ -24,10 +24,10 @@ public class SkillPreCastEvent extends Event implements Cancellable {
     public void setUsername(String username) {
         this.username = username;
     }
-    public Skill getSkill() {
+    public CastSkill getSkill() {
         return skill;
     }
-    public void setManaChange(Skill skill) {
+    public void setManaChange(CastSkill skill) {
         this.skill = skill;
     }
 

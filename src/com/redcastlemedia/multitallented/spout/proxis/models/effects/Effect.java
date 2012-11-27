@@ -22,6 +22,10 @@ public class Effect {
         this.node = node;
     }
     
+    public HashMap<String, Object> getNode() {
+        return node;
+    }
+    
     public void execute(CastSkill cs, HashSet<Object> targetSet) {
         for (Object obj : targetSet) {
             if (obj.getClass().equals(Player.class)) {

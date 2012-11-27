@@ -7,7 +7,6 @@ import java.util.HashSet;
 import org.spout.api.entity.Entity;
 import org.spout.api.entity.Player;
 import org.spout.api.geo.cuboid.Block;
-import org.spout.api.util.config.ConfigurationNode;
 
 /**
  *
@@ -21,6 +20,10 @@ public class Condition {
         this.plugin = plugin;
         this.cs = cs;
         this.node = node;
+    }
+    
+    public HashMap<String, Object> getNode() {
+        return node;
     }
     
     public void testCondition(CastSkill cts, HashSet<Object> targets) {

@@ -1,9 +1,12 @@
 package com.redcastlemedia.multitallented.spout.proxis.models.targets;
 
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
+import com.redcastlemedia.multitallented.spout.proxis.models.targets.TargetSource.TargetScheme;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import org.spout.api.geo.discrete.Point;
 
 /**
  *
@@ -11,27 +14,30 @@ import java.util.HashSet;
  */
 public class Target {
     private final TargetSource ts;
-    private final HashMap<String, Object> config;
+    private final HashMap<String, Object> node;
     private final HashSet<String> targetTypes = new HashSet<>();
     public final String NAME;
     
-    public Target(TargetSource ts, HashMap<String, Object> config) {
+    public Target(String name, TargetSource ts, HashMap<String, Object> node) {
         this.ts = ts;
-        this.config = config;
-        String name = "Invalid";
+        this.node = node;
+        NAME = name;
         try {
-            for (String s : ((HashMap<String, Object>) config.get("pattern")).keySet()) {
-                targetTypes.add(s);
-            }
-            name = (String) config.get("name");
-        } catch (ClassCastException cce) {
+            targetTypes.addAll((ArrayList<String>) node.get("target-types"));
+        } catch (Exception e) {
             
         }
-        NAME = name;
     }
     
-    public HashSet<Object> getTargets(Proxis plugin, User user) {
-        HashSet<Object> tempSet = ts.getTargets(plugin, targetTypes, config);
-        return tempSet;
+    public Point getEndPoint(Proxis plugin, User user, Point originPoint) {
+        return null;
+    }
+    
+    public HashMap<String, Object> getNode() {
+        return node;
+    }
+    
+    public TargetScheme getTargets(Proxis plugin, User user, Point originPoint) {
+        return ts.getTargets(plugin, targetTypes, node, user, originPoint);
     }
 }
