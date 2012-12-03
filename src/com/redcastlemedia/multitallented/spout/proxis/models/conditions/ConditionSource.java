@@ -3,13 +3,12 @@ package com.redcastlemedia.multitallented.spout.proxis.models.conditions;
 import com.redcastlemedia.multitallented.spout.proxis.Proxis;
 import com.redcastlemedia.multitallented.spout.proxis.models.SourceType;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill.CastSkill;
-import com.redcastlemedia.multitallented.spout.proxis.models.skills.SkillResult;
+import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill.SkillResult;
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.SkillSource;
 import com.redcastlemedia.multitallented.spout.proxis.models.users.User;
 import java.util.HashMap;
 import org.spout.api.entity.Entity;
 import org.spout.api.geo.cuboid.Block;
-import org.spout.api.util.config.ConfigurationNode;
 
 /**
  *

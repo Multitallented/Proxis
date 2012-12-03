@@ -1,7 +1,7 @@
 package com.redcastlemedia.multitallented.spout.proxis.api.events;
 
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill.CastSkill;
-import com.redcastlemedia.multitallented.spout.proxis.models.skills.SkillResult;
+import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill.SkillResult;
 import org.spout.api.event.Event;
 import org.spout.api.event.HandlerList;
 

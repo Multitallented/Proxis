@@ -33,10 +33,11 @@ public class Skill {
     private final HashSet<Target> targets;
     private final ArrayList<HashMap<Effect, String>> preCastEffects;
     private final ArrayList<HashMap<Effect, String>> postCastEffects;
+    private final HashSet<String> types = new HashSet<>();
 
     public Skill(Proxis plugin, String name, HashSet<Target> targets, ArrayList<HashMap<Effect, String>> preCastEffects,
             ArrayList<HashMap<Effect, String>> postCastEffects, ArrayList<HashMap<Condition, String>> preCastConditions,
-            ArrayList<HashMap<Condition, String>> postCastConditions) {
+            ArrayList<HashMap<Condition, String>> postCastConditions, HashSet<String> types) {
         NAME = name;
         this.plugin = plugin;
         this.targets = targets;
@@ -44,6 +45,7 @@ public class Skill {
         this.postCastConditions = postCastConditions;
         this.preCastEffects = preCastEffects;
         this.postCastEffects = postCastEffects;
+        this.types.addAll(types);
         
         for (HashMap<Condition, String> tempMap : preCastConditions) {
             tempMap.put(new Condition(plugin, new ConditionSource("ConditionTargetable") {
@@ -135,7 +137,8 @@ public class Skill {
         HashSet<Object> tempSet = new HashSet<>();
         tempSet.add(user);
         targetMap.put("self", tempSet);
-        CastSkill cs = new CastSkill(caster, this, targetMap);
+        
+        CastSkill cs = new CastSkill(caster, this, targetMap, types);
         cs.checkConditions();
     }
 
@@ -145,13 +148,14 @@ public class Skill {
         public final HashMap<Integer, HashSet<SkillResult>> pendingConditions = new HashMap<>();
         public final HashMap<Integer, Integer> pendingConditionsSize = new HashMap<>();
         public boolean preCast = true;
+        public HashSet<String> types = new HashSet<>();
         private Player caster;
         public final ArrayList<HashMap<Condition, String>> instancedPreCastConditions;
         public final ArrayList<HashMap<Condition, String>> instancedPostCastConditions;
         public final ArrayList<HashMap<Effect, String>> instancedPreCastEffects;
         public final ArrayList<HashMap<Effect, String>> instancedPostCastEffects;
         
-        public CastSkill(Player caster, Skill skill, HashMap<String, HashSet<Object>> targetMap) {
+        public CastSkill(Player caster, Skill skill, HashMap<String, HashSet<Object>> targetMap, HashSet<String> types) {
             this.targetMap = targetMap;
             this.skill = skill;
             this.caster = caster;
@@ -159,6 +163,7 @@ public class Skill {
             this.instancedPostCastConditions = (ArrayList<HashMap<Condition, String>>) postCastConditions.clone();
             this.instancedPreCastEffects = (ArrayList<HashMap<Effect, String>>) preCastEffects.clone();
             this.instancedPostCastEffects = (ArrayList<HashMap<Effect, String>>) postCastEffects.clone();
+            this.types.addAll(types);
         }
         
         public void checkConditions() {
@@ -245,5 +250,13 @@ public class Skill {
         public HashMap<String, HashSet<Object>> getTargetMap() {
             return targetMap;
         }
+        public HashSet<String> getTypes() {
+            return types;
+        }
+    }
+    
+    public enum SkillResult {
+        FAILED, //use up costs but dont throw cast event
+        NORMAL //use costs and throw event
     }
 }

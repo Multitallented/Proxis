@@ -25,7 +25,6 @@ import org.spout.vanilla.component.living.Living;
 import org.spout.vanilla.component.misc.HealthComponent;
 import org.spout.vanilla.event.entity.EntityDamageEvent;
 import org.spout.vanilla.event.player.PlayerDeathEvent;
-import org.spout.vanilla.material.VanillaMaterial;
 import org.spout.vanilla.protocol.entity.creature.CreatureType;
 import org.spout.vanilla.protocol.handler.player.EntityHealthChangeEvent;
 import org.spout.vanilla.source.HealthChangeCause;
@@ -185,7 +184,7 @@ public class ProxisListener implements Listener {
             }*/
         }
         
-        //TODO damage manager
+        //TODO move this to the damage manager
     }
     
     ////////////PROXIS EVENTS/////////////////

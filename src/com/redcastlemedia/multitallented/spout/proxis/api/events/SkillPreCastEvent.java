@@ -12,7 +12,6 @@ import org.spout.api.event.HandlerList;
 public class SkillPreCastEvent extends Event implements Cancellable {
     private static final HandlerList hList = new HandlerList();
     private String username;
-    private boolean cancelled = false;
     private CastSkill skill;
     public SkillPreCastEvent(String username, CastSkill skill) {
         this.username = username;

@@ -1,6 +1,7 @@
 package com.redcastlemedia.multitallented.spout.proxis.api.events;
 
 import com.redcastlemedia.multitallented.spout.proxis.models.skills.Skill.CastSkill;
+import org.spout.api.entity.Entity;
 import org.spout.api.event.Cancellable;
 import org.spout.api.event.Event;
 import org.spout.api.event.HandlerList;
@@ -9,25 +10,31 @@ import org.spout.api.event.HandlerList;
  *
  * @author Multitallented
  */
-public class SkillCastEvent extends Event implements Cancellable {
+public class SkillDamageEvent extends Event implements Cancellable {
+    private final CastSkill cs;
+    private Entity e;
+    private int amount;
     private static final HandlerList hList = new HandlerList();
-    private String username;
-    private CastSkill skill;
-    public SkillCastEvent(String username, CastSkill skill) {
-        this.username = username;
-        this.skill = skill;
+    public SkillDamageEvent(CastSkill cs, Entity e, int amount) {
+        this.cs = cs;
+        this.e = e;
+        this.amount = amount;
     }
-    public String getUsername() {
-        return username;
+    
+    public CastSkill getCastSkill() {
+        return cs;
     }
-    public void setUsername(String username) {
-        this.username = username;
+    public Entity getEntity() {
+        return e;
     }
-    public CastSkill getSkill() {
-        return skill;
+    public void setEntity(Entity e) {
+        this.e = e;
     }
-    public void setSkill(CastSkill skill) {
-        this.skill = skill;
+    public int getAmount() {
+        return amount;
+    }
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     @Override
