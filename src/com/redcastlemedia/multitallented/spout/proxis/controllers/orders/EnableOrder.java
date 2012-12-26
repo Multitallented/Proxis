@@ -20,6 +20,9 @@ import org.spout.api.command.annotated.SimpleInjector;
  */
 public class EnableOrder {
     public EnableOrder(Proxis proxis) {
+        //configs
+        
+        
         //commands
         CommandRegistrationsFactory<Class<?>> commandRegFactory = new AnnotatedCommandRegistrationFactory(new SimpleInjector(proxis), new SimpleAnnotatedCommandExecutorFactory());
         proxis.getEngine().getRootCommand().addSubCommands(proxis, ProxisCommands.class, commandRegFactory);
